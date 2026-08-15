@@ -1,0 +1,2253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LotIQ — by OPENLANE</title>
+<link rel="precon costnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1B3A6B; --navy2: #2E5FA3;
+  --green: #3B6D11; --green-lt: #eaf3de; --green-txt: #3B6D11;
+  --amber: #BA7517; --amber-lt: #faeeda; --amber-txt: #854F0B;
+  --red: #A32D2D; --red-lt: #fcebeb; --red-txt: #A32D2D;
+  --blue-lt: #e6f1fb; --blue-txt: #185FA5;
+  --gray-bg: #F4F6FA; --gray-border: #E2E4EA;
+  --text: #1A1A2E; --text2: #6B7280; --white: #ffffff;
+  --radius: 10px; --shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+body { font-family: 'Inter', sans-serif; background: #F0F2F7; color: var(--text); min-height: 100vh; }
+.shell { max-width: 980px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+/* HEADER */
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark { width: 40px; height: 40px; background: var(--navy); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.logo-mark span { color: #fff; font-size: 18px; font-weight: 700; }
+.logo-name { font-size: 22px; font-weight: 600; color: var(--navy); letter-spacing: -0.5px; }
+.logo-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+.badge-live { background: var(--green-lt); color: var(--green-txt); font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+.badge-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; }
+
+/* DEALER BAR */
+.dealer-bar { background: var(--white); border: 1px solid var(--gray-border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; box-shadow: var(--shadow); }
+.dealer-info { flex: 1; min-width: 180px; }
+.dealer-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.dealer-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.stat-group { display: flex; gap: 1.5rem; }
+.stat { text-align: center; }
+.stat-val { font-size: 20px; font-weight: 600; color: var(--navy); }
+.stat-lbl { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.fp-section { flex: 1; min-width: 180px; }
+.fp-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+.fp-track { height: 8px; background: var(--gray-border); border-radius: 4px; overflow: hidden; }
+.fp-fill { height: 100%; background: var(--navy); border-radius: 4px; width: 68%; }
+
+/* TABS */
+.tabs { display: flex; gap: 0; border-bottom: 1.5px solid var(--gray-border); margin-bottom: 1.25rem; }
+.tab { padding: 10px 18px; font-size: 13px; color: var(--text2); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 6px; font-weight: 500; }
+.tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+.tab:hover:not(.active) { color: var(--text); background: var(--gray-bg); border-radius: 8px 8px 0 0; }
+.tab i { font-size: 14px; }
+
+/* CARDS */
+.card { background: var(--white); border: 1px solid var(--gray-border); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 12px; box-shadow: var(--shadow); }
+.card-title { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+.card-sub { font-size: 11px; color: var(--text2); font-weight: 400; }
+
+/* METRICS ROW */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+.metric-card { background: var(--gray-bg); border-radius: var(--radius); padding: 0.9rem 1rem; border: 1px solid var(--gray-border); }
+.metric-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+.metric-value { font-size: 24px; font-weight: 600; color: var(--text); }
+.metric-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.mv-warn { color: var(--amber); }
+.mv-danger { color: var(--red); }
+.mv-good { color: var(--green); }
+
+/* PILLS + BADGES */
+.pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 500; }
+.pill-green { background: var(--green-lt); color: var(--green-txt); }
+.pill-amber { background: var(--amber-lt); color: var(--amber-txt); }
+.pill-red { background: var(--red-lt); color: var(--red-txt); }
+.pill-blue { background: var(--blue-lt); color: var(--blue-txt); }
+.pill-gray { background: var(--gray-bg); color: var(--text2); border: 1px solid var(--gray-border); }
+
+/* FILTERS */
+.filter-row { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+.chip { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--gray-border); color: var(--text2); cursor: pointer; background: var(--white); transition: all 0.15s; white-space: nowrap; }
+.chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.chip:hover:not(.active) { border-color: #aaa; color: var(--text); }
+
+/* VEHICLE CARDS (BUY TAB) */
+.vehicle-list { display: flex; flex-direction: column; gap: 10px; }
+.vehicle-card { background: var(--white); border: 1px solid var(--gray-border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: flex-start; gap: 1rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); }
+.vehicle-card:hover { border-color: #aaa; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.vehicle-card.selected { border-color: var(--navy); border-width: 2px; }
+.vehicle-card.top-pick { border-color: var(--green); }
+.match-badge { min-width: 54px; text-align: center; }
+.match-pct { font-size: 24px; font-weight: 600; }
+.pct-high { color: var(--green); }
+.pct-mid { color: var(--amber); }
+.match-lbl { font-size: 10px; color: var(--text2); margin-top: 1px; }
+.top-label { font-size: 10px; font-weight: 600; color: var(--green); background: var(--green-lt); padding: 2px 7px; border-radius: 20px; margin-bottom: 5px; display: inline-block; }
+.vehicle-main { flex: 1; min-width: 0; }
+.vehicle-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.vehicle-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.tags { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+.vehicle-numbers { text-align: right; min-width: 130px; }
+.bid-price { font-size: 20px; font-weight: 600; color: var(--text); }
+.est-retail { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.margin-est { font-size: 13px; font-weight: 600; color: var(--green); margin-top: 4px; }
+.margin-warn { color: var(--amber); }
+.recon cost { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+/* DETAIL PANEL */
+.detail-panel { background: var(--gray-bg); border: 1.5px solid var(--navy); border-radius: var(--radius); padding: 1.25rem; margin-top: 10px; }
+.detail-title { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+.detail-item .dl { font-size: 11px; color: var(--text2); margin-bottom: 3px; }
+.detail-item .dv { font-size: 14px; font-weight: 600; color: var(--text); }
+.dv-good { color: var(--green) !important; }
+.dv-warn { color: var(--amber) !important; }
+.dv-danger { color: var(--red) !important; }
+.reason-list { margin-bottom: 1rem; }
+.reason-item { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--gray-border); font-size: 12.5px; color: var(--text2); }
+.reason-item:last-child { border-bottom: none; }
+.ri-icon { margin-top: 1px; flex-shrink: 0; font-size: 13px; }
+.ri-pos { color: var(--green); }
+.ri-neg { color: var(--amber); }
+.action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-primary { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.btn-primary:hover { background: #152d54; }
+.btn-secondary { background: var(--white); color: var(--text); border: 1px solid var(--gray-border); border-radius: 8px; padding: 9px 16px; font-size: 13px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.btn-secondary:hover { background: var(--gray-bg); }
+
+/* TWO COL */
+.two-col { display: grid; grid-template-columns: 1fr 1.6fr; gap: 12px; margin-bottom: 12px; }
+
+/* CATEGORY BARS */
+.cat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cat-label { font-size: 12px; color: var(--text2); width: 60px; flex-shrink: 0; }
+.cat-bar-track { flex: 1; height: 8px; background: var(--gray-border); border-radius: 4px; overflow: hidden; }
+.cat-bar-fill { height: 100%; border-radius: 4px; }
+.cat-count { font-size: 12px; font-weight: 600; color: var(--text); width: 28px; text-align: right; }
+.cat-days { font-size: 11px; width: 44px; text-align: right; }
+
+/* ALERT */
+.alert-banner { background: var(--amber-lt); border: 1px solid #FAC775; border-radius: var(--radius); padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+.alert-icon { color: var(--amber); font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+.alert-text { font-size: 12.5px; color: #633806; }
+
+/* FLOOR PLAN */
+.fp-bar-track { height: 10px; background: var(--gray-border); border-radius: 5px; overflow: hidden; margin: 5px 0 12px; }
+.fp-bar-fill { height: 100%; border-radius: 5px; }
+.fp-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 3px; }
+.fp-meta span:last-child { font-weight: 500; color: var(--text); }
+
+/* INSIGHTS */
+.insight-item { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; font-size: 12px; color: var(--text2); }
+.insight-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+
+/* AGING TABLE */
+.aging-head { display: grid; grid-template-columns: 2fr 0.8fr 0.9fr 0.9fr 0.9fr 0.9fr 1.2fr; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--gray-border); margin-bottom: 4px; }
+.aging-col { font-size: 11px; color: var(--text2); font-weight: 500; }
+.aging-col.r { text-align: right; }
+.aging-row { display: grid; grid-template-columns: 2fr 0.8fr 0.9fr 0.9fr 0.9fr 0.9fr 1.2fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--gray-border); align-items: center; }
+.aging-row:last-child { border-bottom: none; }
+.veh-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.veh-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.r { text-align: right; }
+.act-btn { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--gray-border); background: var(--white); color: var(--text); cursor: pointer; white-space: nowrap; font-family: inherit; transition: opacity 0.15s; }
+.act-btn:hover { opacity: 0.8; }
+.act-urgent { background: var(--red-lt); color: var(--red); border-color: #F7C1C1; }
+.act-warn { background: var(--amber-lt); color: var(--amber-txt); border-color: #FAC775; }
+
+/* MARKET PULSE */
+.pulse-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.pulse-card { background: var(--gray-bg); border-radius: var(--radius); padding: 0.9rem 1rem; border: 1px solid var(--gray-border); }
+.pulse-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+.pulse-value { font-size: 22px; font-weight: 600; color: var(--text); }
+.pulse-trend { font-size: 11px; margin-top: 3px; }
+.trend-up { color: var(--green); }
+.trend-down { color: var(--red); }
+.trend-flat { color: var(--amber); }
+
+.seg-table { width: 100%; border-collapse: collapse; }
+.seg-table th { font-size: 11px; color: var(--text2); font-weight: 500; padding: 0 0 8px 0; text-align: left; border-bottom: 1px solid var(--gray-border); white-space: nowrap; }
+.seg-table th.r { text-align: right; }
+.seg-table td { padding: 10px 0; border-bottom: 1px solid var(--gray-border); font-size: 12.5px; color: var(--text); vertical-align: middle; }
+.seg-table td.r { text-align: right; }
+.seg-table tr:last-child td { border-bottom: none; }
+.seg-table tbody tr { cursor: pointer; }
+.seg-table tbody tr:hover td { background: var(--gray-bg); }
+.seg-table tbody tr.active-row td { background: var(--blue-lt); }
+.seg-name { font-weight: 600; }
+.seg-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+
+.demand-wrap { display: flex; align-items: center; gap: 8px; }
+.mini-bars { display: flex; align-items: flex-end; gap: 2px; height: 32px; }
+.mini-bar { width: 6px; border-radius: 2px 2px 0 0; }
+
+.opp-badge { font-size: 10.5px; padding: 3px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+.opp-buy { background: var(--green-lt); color: var(--green-txt); }
+.opp-hold { background: var(--amber-lt); color: var(--amber-txt); }
+.opp-avoid { background: var(--red-lt); color: var(--red-txt); }
+
+.pg-pos { color: var(--green); font-weight: 600; }
+.pg-neg { color: var(--red); font-weight: 600; }
+.pg-flat { color: var(--amber); font-weight: 600; }
+
+/* DRILL DOWN */
+.drill-panel { background: var(--white); border: 2px solid var(--navy); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(27,58,107,0.12); }
+.drill-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.drill-title { font-size: 14.5px; font-weight: 600; color: var(--navy); }
+.close-x { font-size: 20px; color: var(--text2); cursor: pointer; line-height: 1; background: none; border: none; font-family: inherit; }
+.close-x:hover { color: var(--text); }
+.drill-4col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+.drill-metric .dl { font-size: 11px; color: var(--text2); margin-bottom: 3px; }
+.drill-metric .dv { font-size: 17px; font-weight: 600; }
+
+.trend-section { margin-bottom: 1rem; }
+.trend-lbl { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+.trend-bars-wrap { display: flex; align-items: flex-end; gap: 5px; height: 52px; }
+.trend-bar-item { flex: 1; border-radius: 3px 3px 0 0; min-height: 4px; }
+.trend-months { display: flex; gap: 5px; margin-top: 4px; }
+.trend-month { flex: 1; font-size: 9.5px; color: var(--text2); text-align: center; }
+
+.nearby-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+.nearby-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--gray-bg); border-radius: 8px; border: 1px solid var(--gray-border); }
+.nearby-name { font-size: 12.5px; font-weight: 500; color: var(--text); }
+.nearby-dist { font-size: 11px; color: var(--text2); }
+.nearby-price { font-size: 13px; font-weight: 600; }
+.nearby-days-on { font-size: 11px; color: var(--text2); }
+
+.insight-box { background: var(--blue-lt); border-radius: 8px; padding: 10px 14px; margin-bottom: 1rem; border: 1px solid #B5D4F4; }
+.insight-box-text { font-size: 12.5px; color: var(--blue-txt); line-height: 1.6; }
+
+.search-input { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--gray-border); font-size: 13px; font-family: inherit; color: var(--text); background: var(--white); margin-bottom: 1rem; }
+.search-input:focus { outline: none; border-color: var(--navy); }
+
+.sources-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.source-item { }
+.source-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+.source-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.source-body { font-size: 11.5px; color: var(--text2); line-height: 1.5; }
+
+.tab-view { display: none; }
+.tab-view.active { display: block; }
+
+.placeholder-view { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; color: var(--text2); }
+.placeholder-view i { font-size: 36px; color: var(--navy); margin-bottom: 1rem; opacity: 0.5; }
+.placeholder-view p { font-size: 14px; }
+
+@media (max-width: 640px) {
+  .metrics { grid-template-columns: 1fr 1fr; }
+  .pulse-grid { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .drill-4col { grid-template-columns: 1fr 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .sources-grid { grid-template-columns: 1fr; }
+  .stat-group { gap: 1rem; }
+  .aging-head, .aging-row { grid-template-columns: 2fr 0.8fr 1fr; }
+  .aging-head .r:nth-child(4), .aging-head .r:nth-child(5),
+  .aging-row .r:nth-child(4), .aging-row .r:nth-child(5) { display: none; }
+}
+
+/* ── CAR THUMBNAILS ── */
+.car-thumb { width: 96px; height: 64px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: var(--gray-bg); border: 1px solid var(--gray-border); }
+.car-thumb-lg { width: 100%; height: 180px; border-radius: 8px; object-fit: cover; margin-bottom: 1rem; background: var(--gray-bg); border: 1px solid var(--gray-border); }
+.car-thumb-placeholder { width: 96px; height: 64px; border-radius: 8px; background: var(--gray-bg); border: 1px solid var(--gray-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ── BUY NOW BUTTON ── */
+.btn-buy { background: var(--green); color: #fff; border: none; border-radius: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; display: flex; align-items: center; gap: 6px; }
+.btn-buy:hover { background: #2d5510; }
+@keyframes pulse-ring {
+  0%   { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(2.4);  opacity: 0; }
+}
+@keyframes pulse-core-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+.pulse-wrapper {
+  position: relative; width: 12px; height: 12px; flex-shrink: 0; display: inline-flex;
+  align-items: center; justify-content: center;
+}
+.pulse-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: rgba(59,109,17,0.45);
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+.pulse-core {
+  position: absolute; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green);
+  animation: pulse-core-blink 1.8s ease-in-out infinite;
+}
+
+/* ── VEHICLE LOCATION ROW ── */
+.vehicle-location { display: flex; align-items: center; gap: 14px; margin-top: 5px; flex-wrap: wrap; }
+.loc-item { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--text2); }
+.loc-item i { font-size: 10px; color: var(--text2); }
+.days-fresh { color: var(--green-txt); font-weight: 600; }
+.days-mid   { color: var(--amber);     font-weight: 600; }
+.days-old   { color: var(--red);       font-weight: 600; }
+
+/* ── AFC CREDIT BLOCK IN DEALER BAR ── */
+.afc-credit-block { flex: 1; min-width: 200px; }
+.afc-header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
+.afc-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; }
+.afc-total { font-size: 11px; color: var(--text2); }
+.afc-bar-wrap { margin-bottom: 4px; }
+.afc-numbers { display: flex; justify-content: space-between; font-size: 11px; }
+.afc-used  { color: var(--amber); font-weight: 500; }
+.afc-avail { color: var(--green-txt); font-weight: 600; }
+
+/* ── LOT CAPACITY BLOCK ── */
+.lot-cap-block { flex: 1; min-width: 150px; }
+.lot-cap-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+.lot-cap-bar-wrap { margin-bottom: 4px; }
+.lot-cap-numbers { display: flex; justify-content: space-between; font-size: 11px; }
+.lot-cap-used  { color: var(--navy); font-weight: 500; }
+.lot-cap-avail { color: var(--green-txt); font-weight: 600; }
+
+/* ── VIN ROW ── */
+.vin-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.vin-code { font-size: 12px; font-family: monospace; color: var(--text); background: var(--gray-bg); padding: 3px 9px; border-radius: 5px; border: 1px solid var(--gray-border); letter-spacing: 0.8px; }
+.copy-btn { font-size: 11px; padding: 3px 10px; border-radius: 5px; border: 1px solid var(--gray-border); background: var(--white); color: var(--text2); cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.copy-btn:hover { background: var(--gray-bg); }
+
+/* ── PRICE DROP BADGE ── */
+.price-drop-badge { display:inline-flex; align-items:center; gap:4px; background:#FEF3C7; color:#92400E; font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px; border:1px solid #FCD34D; }
+
+/* ── ALERT MODAL ── */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:200; display:flex; align-items:center; justify-content:center; padding:1rem; }
+.modal-box { background:var(--white); border-radius:14px; padding:1.5rem; width:100%; max-width:460px; box-shadow:0 8px 40px rgba(0,0,0,0.2); }
+.modal-title { font-size:16px; font-weight:600; color:var(--navy); margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+.modal-sub { font-size:12.5px; color:var(--text2); margin-bottom:1.25rem; line-height:1.5; }
+.modal-label { font-size:12px; font-weight:500; color:var(--text); margin-bottom:5px; display:block; }
+.modal-select, .modal-input { width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--gray-border); font-size:13px; font-family:inherit; color:var(--text); background:var(--white); margin-bottom:12px; }
+.modal-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.modal-row .modal-select, .modal-row .modal-input { margin-bottom:0; }
+.modal-select:focus, .modal-input:focus { outline:none; border-color:var(--navy); }
+.modal-actions { display:flex; gap:8px; margin-top:1.25rem; }
+.modal-cancel { flex:1; padding:9px; border-radius:8px; border:1px solid var(--gray-border); background:var(--white); color:var(--text2); font-size:13px; font-family:inherit; cursor:pointer; }
+.modal-save { flex:2; padding:9px; border-radius:8px; border:none; background:var(--navy); color:#fff; font-size:13px; font-weight:600; font-family:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:background 0.15s; }
+.modal-save:hover { background:#152d54; }
+
+/* ── ACTIVE ALERTS BAR ── */
+.alerts-bar { background:var(--green-lt); border:1px solid #86EFAC; border-radius:10px; padding:9px 14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+.alert-chip { display:inline-flex; align-items:center; gap:5px; background:var(--white); border:1px solid #86EFAC; border-radius:20px; padding:3px 10px; font-size:11.5px; color:var(--green-txt); font-weight:500; cursor:pointer; }
+.alert-chip:hover { background:var(--green-lt); }
+.alert-chip i { font-size:10px; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-mark"><span>L</span></div>
+      <div>
+        <div class="logo-name">LotIQ</div>
+        <div class="logo-sub">by OPENLANE · AI intelligence layer for MyLot · Cedar Rapids, IA</div>
+      </div>
+    </div>
+    <div class="badge-live" style="display:flex;align-items:center;gap:8px;">
+      <div class="pulse-wrapper"><div class="pulse-ring"></div><div class="pulse-core"></div></div>
+      Live market data
+    </div>
+    <div style="font-size:11px;color:var(--text2);text-align:right;line-height:1.4;">
+      <span style="color:var(--navy);font-weight:600;">Demo concept</span><br>
+      Pallavi Singhal · 2026
+    </div>
+  </div>
+
+  <!-- DEALER BAR -->
+  <div class="dealer-bar" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;padding:0.85rem 1.25rem;">
+
+    <div class="dealer-info">
+      <div class="dealer-name">Mike · Riverside Auto</div>
+      <div class="dealer-sub">Owner / Used-Car Manager · Cedar Rapids, IA · 40–60 vehicles · Buys 10–20/month</div>
+    </div>
+
+    <div style="width:1px;height:36px;background:var(--gray-border);flex-shrink:0;"></div>
+
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;flex:1;">
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;">Credit available to buy</span>
+        <span style="font-size:18px;font-weight:700;color:var(--green-txt);">$456K</span>
+        <span style="font-size:10px;color:var(--text2);">of $1.2M · 62% used</span>
+      </div>
+
+      <div style="width:1px;height:36px;background:var(--gray-border);flex-shrink:0;"></div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;">Lot Spaces</span>
+        <span style="font-size:18px;font-weight:700;color:var(--navy);">15 open</span>
+        <span style="font-size:10px;color:var(--text2);">45 of 60 filled</span>
+      </div>
+
+      <div style="width:1px;height:36px;background:var(--gray-border);flex-shrink:0;"></div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;">Avg Gross / Unit</span>
+        <span style="font-size:18px;font-weight:700;color:var(--green-txt);">$2,040</span>
+        <span style="font-size:10px;color:var(--text2);">+$180 vs last month</span>
+      </div>
+
+      <div style="width:1px;height:36px;background:var(--gray-border);flex-shrink:0;"></div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;">Hold Cost / Day</span>
+        <span style="font-size:18px;font-weight:700;color:var(--red);">$186</span>
+        <span style="font-size:10px;color:var(--text2);">in daily financing interest on your inventory</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('lot',this)"><i class="fa-solid fa-car-side"></i>My Lot</div>
+    <div class="tab" onclick="switchTab('buy',this)"><i class="fa-solid fa-star"></i>Buy recommendations</div>
+    <div class="tab" onclick="switchTab('pulse',this)" style="font-size:12px;color:var(--text2);opacity:0.75;"><i class="fa-solid fa-database" style="font-size:11px"></i>Market intelligence</div>
+  </div>
+
+  <!-- ══ BUY TAB ══ -->
+  <div id="tab-buy" class="tab-view">
+    <div class="card">
+      <div class="card-title">Recommended for your lot <span class="card-sub">Ranked by projected gross · local demand signals · your lot turn history</span></div>
+
+      <!-- CONNECTION A: What's shaping today's list -->
+      <div style="background:var(--gray-bg);border:1px solid var(--gray-border);border-radius:10px;padding:10px 14px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">What's shaping today's rankings</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;align-items:center;">
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#DCFCE7;color:#166534;font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:20px;cursor:pointer;" onclick="switchTab('pulse',document.querySelectorAll('.tab')[2]);setTimeout(()=>{activeSeg='truck';renderSegs();},100)">
+            <i class="fa-solid fa-fire" style="font-size:10px"></i> Trucks: Hot market ↑
+          </span>
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;color:#92400E;font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:20px;cursor:pointer;" onclick="switchTab('pulse',document.querySelectorAll('.tab')[2]);setTimeout(()=>{activeSeg='suv';renderSegs();},100)">
+            <i class="fa-solid fa-arrow-trend-up" style="font-size:10px"></i> SUV auction prices rising ↑
+          </span>
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#FEE2E2;color:#991B1B;font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:20px;cursor:pointer;" onclick="switchTab('pulse',document.querySelectorAll('.tab')[2]);setTimeout(()=>{activeSeg='sedan';renderSegs();},100)">
+            <i class="fa-solid fa-arrow-trend-down" style="font-size:10px"></i> Sedan demand falling ↓
+          </span>
+          <span style="font-size:11px;color:var(--text2);margin-left:4px;">Click any signal to see the full market data →</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+        <div class="filter-row" id="buy-filters" style="margin-bottom:0; flex:1"></div>
+        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+          <button onclick="openAlertModal()" style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1.5px solid var(--navy);background:var(--white);color:var(--navy);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">
+            <i class="fa-regular fa-bell"></i> Set Alert
+          </button>
+          <span style="font-size:12px; color:var(--text2); white-space:nowrap;">Sort by</span>
+          <select id="buy-sort" style="font-size:12px; padding:5px 10px; border-radius:8px; border:1px solid var(--gray-border); background:var(--white); color:var(--text); font-family:inherit; cursor:pointer;">
+            <option value="recommended">⭐ Recommended</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="gross-desc">Est. Gross: Highest</option>
+            <option value="days-asc">Days on Market: Newest</option>
+            <option value="days-desc">Days on Market: Oldest</option>
+            <option value="distance-asc">Distance: Closest</option>
+          </select>
+        </div>
+      </div>
+      <div id="alerts-bar" style="display:none"></div>
+      <div style="font-size:11px; color:var(--text2); margin-bottom:10px; display:flex; align-items:center; gap:5px;">
+        <i class="fa-solid fa-hand-pointer" style="font-size:10px; color:var(--navy)"></i>
+        Click any vehicle card to expand full LotIQ analysis
+      </div>
+      <div class="vehicle-list" id="vehicle-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ LOT TAB ══ -->
+  <div id="tab-lot" class="tab-view active">
+    <div style="background:var(--blue-lt); border:1px solid #B5D4F4; border-radius:var(--radius); padding:9px 14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-rotate" style="color:var(--blue-txt); font-size:13px"></i>
+        <span style="font-size:12.5px; color:var(--blue-txt); font-weight:500">Inventory synced from MyLot</span>
+        <span style="font-size:12px; color:var(--text2)">· Updated 2h ago · 45 units</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:11px; color:var(--text2)">Powered by</span>
+        <span style="font-size:11.5px; font-weight:600; color:var(--navy)">OPENLANE MyLot</span>
+        <span style="font-size:11px; color:var(--text2)">+</span>
+        <span style="font-size:11.5px; font-weight:600; color:var(--navy)">OPENLANE auction data</span>
+      </div>
+    </div>
+
+    <!-- TODAY'S ACTION LIST — first 3 shown, rest expandable -->
+    <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:12px;box-shadow:var(--shadow);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i class="fa-solid fa-list-check" style="color:var(--navy);font-size:14px"></i>
+          <span style="font-size:13px;font-weight:600;color:var(--text);">Today's action list</span>
+          <span style="font-size:11px;color:var(--text2);">Wednesday, Aug 5</span>
+        </div>
+        <span id="action-summary" style="font-size:11px;color:var(--text2);"></span>
+      </div>
+      <div id="action-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+
+    <!-- DEALER KPIs — 6 industry standard metrics -->
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px;">
+      <div class="metric-card" style="border-left:3px solid var(--navy);">
+        <div class="metric-label" style="font-size:10px;">Vehicles sold / month</div>
+        <div class="metric-value mv-good">34</div>
+        <div class="metric-sub">You clear your full lot every 40 days</div>
+      </div>
+      <div class="metric-card" style="border-left:3px solid var(--navy);">
+        <div class="metric-label" style="font-size:10px;">Avg days to sell</div>
+        <div class="metric-value mv-warn">26</div>
+        <div class="metric-sub">Aim for under 28 days</div>
+      </div>
+      <div class="metric-card" style="border-left:3px solid var(--navy);">
+        <div class="metric-label" style="font-size:10px;">Profit per vehicle sold</div>
+        <div class="metric-value mv-good">$2,040</div>
+        <div class="metric-sub">+$180 vs last month</div>
+      </div>
+      <div class="metric-card" style="border-left:3px solid var(--navy);">
+        <div class="metric-label" style="font-size:10px;">Vehicles over 30 days</div>
+        <div class="metric-value mv-warn">13%</div>
+        <div class="metric-sub">6 vehicles aging — watch this</div>
+      </div>
+      <div class="metric-card" style="border-left:3px solid var(--navy);">
+        <div class="metric-label" style="font-size:10px;">Interest cost today</div>
+        <div class="metric-value mv-danger">$186</div>
+        <div class="metric-sub">Financing interest you pay daily</div>
+      </div>
+      <div class="metric-card" style="border-left:3px solid var(--navy);">
+        <div class="metric-label" style="font-size:10px;">Your prices vs market</div>
+        <div class="metric-value mv-good">87%</div>
+        <div class="metric-sub">You are priced competitively</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Inventory by category</div>
+        <div id="cat-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Financing</div>
+        <div class="fp-meta"><span>Total financing line</span><span>$1,200,000</span></div>
+        <div class="fp-meta"><span>Utilized</span><span>$744,000 (62%)</span></div>
+        <div class="fp-bar-track"><div class="fp-bar-fill" style="width:62%;background:var(--navy)"></div></div>
+        <div class="fp-meta" style="margin-top:8px"><span>Aging 30d+ exposure</span><span>$148,000</span></div>
+        <div class="fp-bar-track"><div class="fp-bar-fill" style="width:20%;background:var(--text2)"></div></div>
+        <div style="margin-top:1rem;display:flex;flex-direction:column;gap:6px;">
+          <div class="insight-item"><div class="insight-dot" style="background:var(--text2)"></div><span>Moving 6 aged units would free $148K for new inventory</span></div>
+          <div class="insight-item"><div class="insight-dot" style="background:var(--text2)"></div><span>Trucks turn in 19 days avg — consider adding 2 more units</span></div>
+          <div class="insight-item"><div class="insight-dot" style="background:var(--text2)"></div><span>$456K financing capacity remaining supports 2–3 truck purchases</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">My lot — all vehicles <span class="card-sub">Financing cost so far at 1.5%/month · Select vehicles for bulk actions</span></div>
+
+      <!-- BULK ACTION BAR — appears when vehicles selected -->
+      <div id="bulk-bar" style="display:none;background:var(--navy);border-radius:8px;padding:9px 14px;margin-bottom:12px;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <span id="bulk-count" style="font-size:13px;font-weight:500;color:#fff;"></span>
+        <div style="display:flex;gap:8px;">
+          <button onclick="bulkDrop()" style="background:#fff;color:var(--navy);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Drop prices on selected</button>
+          <button onclick="clearSelection()" style="background:transparent;color:#9AAFC8;border:1px solid #3A5A8A;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">Clear</button>
+        </div>
+      </div>
+
+      <!-- MARGIN EROSION — aging vehicles only -->
+      <div style="background:var(--gray-bg);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;">Margin erosion forecast — if unsold</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" id="erosion-cards"></div>
+      </div>
+      <div class="filter-row" id="lot-filters">
+        <div class="chip active" data-f="all">All vehicles</div>
+        <div class="chip" data-f="ok">On track</div>
+        <div class="chip" data-f="warn">Needs attention</div>
+        <div class="chip" data-f="danger">Act now</div>
+      </div>
+      <div class="aging-head" style="grid-template-columns:36px 2fr 0.7fr 0.8fr 0.8fr 0.8fr 0.8fr 1.2fr;">
+        <div style="display:flex;align-items:center;">
+          <input type="checkbox" id="select-all-chk" style="width:15px;height:15px;cursor:pointer;" onchange="toggleSelectAll(this.checked)">
+        </div>
+        <div class="aging-col">Vehicle</div>
+        <div class="aging-col r">Days</div>
+        <div class="aging-col r">Bought</div>
+        <div class="aging-col r">List price</div>
+        <div class="aging-col r">Daily interest</div>
+        <div class="aging-col r">Financing cost so far</div>
+        <div class="aging-col r">Action</div>
+      </div>
+      <div id="aging-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ PULSE TAB ══ -->
+  <div id="tab-pulse" class="tab-view">
+
+    <!-- Powers everything banner -->
+    <div style="background:var(--navy);border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:flex-start;gap:14px;">
+      <i class="fa-solid fa-database" style="color:#4ADE80;font-size:20px;flex-shrink:0;margin-top:2px;"></i>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;">This data powers your Buy Recommendations and My Lot action list</div>
+        <div style="font-size:12.5px;color:#A8C4E8;line-height:1.6;">You don't need to check this tab every day — LotIQ reads it automatically and surfaces the signals that matter in the right place, at the right moment. Explore here when you want to understand the market behind a recommendation.</div>
+      </div>
+    </div>
+
+    <!-- Data source bar -->
+    <div style="background:var(--blue-lt);border:1px solid #B5D4F4;border-radius:var(--radius);padding:9px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <i class="fa-solid fa-chart-line" style="color:var(--blue-txt);font-size:13px"></i>
+        <span style="font-size:12.5px;color:var(--blue-txt);font-weight:500">OPENLANE auction data · Buyer search activity · OPENLANE transaction data</span>
+      </div>
+      <span style="font-size:11px;color:var(--text2)">50mi radius · Cedar Rapids, IA · Updated daily</span>
+    </div>
+
+    <!-- Summary — 4 actionable signals, not abstract stats -->
+    <div class="pulse-grid" style="margin-bottom:12px;">
+      <div class="pulse-card" style="border-left:3px solid var(--navy);">
+        <div class="pulse-label">Best segment to buy now</div>
+        <div class="pulse-value" style="font-size:16px;font-weight:700;color:var(--green-txt);">Pickup Trucks</div>
+        <div class="pulse-trend" style="color:var(--green-txt);">↑ High demand · Low supply · Prices falling</div>
+      </div>
+      <div class="pulse-card" style="border-left:3px solid var(--navy);">
+        <div class="pulse-label">Use caution</div>
+        <div class="pulse-value" style="font-size:16px;font-weight:700;color:var(--amber);">Sedans · Minivans</div>
+        <div class="pulse-trend" style="color:var(--amber);">Competitive market — price sharp, expect 35+ days</div>
+      </div>
+      <div class="pulse-card" style="border-left:3px solid var(--navy);">
+        <div class="pulse-label">Wholesale prices this week</div>
+        <div class="pulse-value" style="font-size:16px;font-weight:700;color:var(--navy);">Mixed</div>
+        <div class="pulse-trend" style="color:var(--text2);">Trucks ↓ good to buy · SUVs ↑ consider waiting</div>
+      </div>
+      <div class="pulse-card" style="border-left:3px solid var(--navy);">
+        <div class="pulse-label">Your biggest gap</div>
+        <div class="pulse-value" style="font-size:16px;font-weight:700;color:var(--red);">Trucks understocked</div>
+        <div class="pulse-trend" style="color:var(--red);">2 on lot · market absorbs in 17 days · buy 2–3 more</div>
+      </div>
+    </div>
+
+    <!-- Segment table -->
+    <div class="card">
+      <div class="card-title">Segment detail <span class="card-sub">Click any row to expand · your lot exposure shown</span></div>
+      <input class="search-input" type="text" placeholder="Search segment..." id="seg-search" oninput="segSearch=this.value;renderSegs()">
+      <table class="seg-table">
+        <thead><tr>
+          <th>Segment <span style="color:var(--text2);font-size:10px;font-weight:400">· your units on lot</span></th>
+          <th>Market temperature</th>
+          <th>Supply 50mi</th>
+          <th>Auction prices <span style="color:var(--text2);font-size:10px">· OPENLANE auction data</span></th>
+          <th class="r">Est. days to sell</th>
+          <th class="r">Market signal</th>
+        </tr></thead>
+        <tbody id="seg-body"></tbody>
+      </table>
+    </div>
+
+    <div id="drill-container" style="display:none"></div>
+
+    <!-- Data sources footer -->
+    <div class="card">
+      <div class="card-title">Data sources</div>
+      <div class="sources-grid">
+        <div class="source-item">
+          <div class="source-title"><div class="source-dot" style="background:#185FA5"></div>How many buyers are searching</div>
+          <div class="source-body">Tracks queries like "used truck Cedar Rapids" — rising volume signals buyer intent before demand peaks. Updated weekly.</div>
+        </div>
+        <div class="source-item">
+          <div class="source-title"><div class="source-dot" style="background:var(--amber)"></div>Local listing supply</div>
+          <div class="source-body">Aggregates listings within 50 miles across CarGurus, Facebook Marketplace, Autotrader, and OPENLANE. Refreshed daily.</div>
+        </div>
+        <div class="source-item">
+          <div class="source-title"><div class="source-dot" style="background:var(--green)"></div>OPENLANE auction price data</div>
+          <div class="source-body">30-day wholesale price trend per segment from OPENLANE's OPENLANE auction data — tells you whether now is a good time to buy at auction.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<!-- SAVED SEARCH ALERT MODAL -->
+<div class="modal-overlay" id="alert-modal" style="display:none" onclick="if(event.target===this)closeAlertModal()">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fa-regular fa-bell" style="color:var(--navy)"></i> Set a Vehicle Alert</div>
+    <div class="modal-sub">LotIQ will notify you when a matching vehicle hits OPENLANE — so you can act before competitors do.</div>
+
+    <label class="modal-label">Vehicle type</label>
+    <select class="modal-select" id="al-type">
+      <option>Any vehicle</option>
+      <option>Pickup Truck</option>
+      <option>SUV / Crossover</option>
+      <option>Sedan</option>
+      <option>Electric Vehicle</option>
+      <option>Minivan</option>
+    </select>
+
+    <label class="modal-label">Make / Model (optional)</label>
+    <input class="modal-input" id="al-model" placeholder="e.g. Chevrolet Silverado, Ford F-150…">
+
+    <div class="modal-row" style="margin-bottom:12px;">
+      <div>
+        <label class="modal-label">Max bid price</label>
+        <input class="modal-input" id="al-price" placeholder="e.g. $35,000" style="margin-bottom:0">
+      </div>
+      <div>
+        <label class="modal-label">Max distance</label>
+        <select class="modal-select" id="al-dist" style="margin-bottom:0">
+          <option>Within 50 miles</option>
+          <option>Within 100 miles</option>
+          <option>Within 200 miles</option>
+          <option>Any distance</option>
+        </select>
+      </div>
+    </div>
+
+    <label class="modal-label">Notify me via</label>
+    <select class="modal-select" id="al-notify">
+      <option>Push notification + Email</option>
+      <option>Push notification only</option>
+      <option>Email only</option>
+    </select>
+
+    <div style="background:var(--blue-lt);border:1px solid #B5D4F4;border-radius:8px;padding:9px 12px;font-size:12px;color:var(--blue-txt);">
+      <i class="fa-solid fa-sparkles" style="margin-right:5px"></i>
+      <strong>LotIQ tip:</strong> Trucks matching your profile are turning in 20 days right now. Set an alert to be first in line.
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeAlertModal()">Cancel</button>
+      <button class="modal-save" onclick="saveAlert()"><i class="fa-regular fa-bell"></i> Save Alert</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ DATA ══ */
+/* ══ CAR IMAGE MAP ══ */
+const carImages = {
+  silverado:     'https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=320&h=200&fit=crop',
+  explorer:      'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=320&h=200&fit=crop',
+  mache:         'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=320&h=200&fit=crop',
+  f150:          'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=320&h=200&fit=crop',
+  rav4:          'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=320&h=200&fit=crop',
+  grandcherokee: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=320&h=200&fit=crop',
+  sierra:        'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=320&h=200&fit=crop',
+  crv:           'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=320&h=200&fit=crop',
+  ram1500:       'https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=320&h=200&fit=crop',
+  equinox:       'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=320&h=200&fit=crop',
+  bolt:          'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=320&h=200&fit=crop',
+  escape:        'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=320&h=200&fit=crop',
+  f150old:       'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=320&h=200&fit=crop',
+  rogue:         'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=320&h=200&fit=crop',
+  tucson:        'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=320&h=200&fit=crop',
+  camry:         'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=320&h=200&fit=crop',
+  mazda6:        'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=320&h=200&fit=crop',
+  civic:         'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=320&h=200&fit=crop',
+  jetta:         'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=320&h=200&fit=crop',
+  accord:        'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=320&h=200&fit=crop',
+};
+function getImg(v) { return carImages[v.imgKey] || ''; }
+
+const vehicles = [
+  { id:1,  match:95, cat:'truck', ev:false, fast:true,  page:1, priceDrop:null,
+    title:'2022 Chevrolet Silverado 1500 LT · Crew Cab', meta:'41,200 mi · Clean title · 2 owners · Fleet maintained',
+    imgKey:'silverado',
+    bid:31400, retail:37200, recon:1100, reconRange:"$900–1,300", tags:[{l:'Fleet maintained',t:'blue'},{l:'Fast turn',t:'green'},{l:'High demand',t:'green'}],
+    reasons:[{t:'Highest demand segment in Cedar Rapids — 92/100 search score, rising fast',p:true},{t:'Only 38 similar trucks within 50 miles — low competition means your unit stands out',p:true},{t:'Crew cab 1500s average $4,700 est. profit on your lot after recon cost',p:true},{t:'Fleet maintenance records available — supports retail price',p:true}],
+    matchSignals:[
+      {label:'Your lot turns Silverado-class trucks in 20 days avg',impact:'up',weight:'Strong'},
+      {label:'High buyer demand in Cedar Rapids — 92/100',impact:'up',weight:'Strong'},
+      {label:'Low competition — only 38 similar trucks within 50 miles',impact:'up',weight:'Strong'},
+      {label:'Fleet records available — supports asking price',impact:'up',weight:'Moderate'},
+      {label:'0 similar units on your lot — no segment overlap',impact:'up',weight:'Moderate'},
+    ],
+    baseMatch:95, lotPenalty:0,
+    localDemand:'Very high', daysToTurn:'18–24 est.', condScore:'7.9/10', afc:true,
+    location:'Des Moines, IA', miles:131, daysListed:2, vin:'1GCUYDED4NZ184726' },
+  { id:2,  imgKey:'explorer',  match:81, cat:'suv', priceDrop:{amount:900, daysAgo:3}, priceTiming:'before-rise', ev:false, fast:true,  page:1,
+    title:'2023 Ford Explorer XLT · 4WD', meta:'28,400 mi · Clean Carfax · 1 owner · Cedar Rapids area',
+    bid:26800, retail:31500, recon:650, reconRange:"~$500–800", tags:[{l:'Strong lot history',t:'green'},{l:'Fast turn',t:'green'},{l:'Financing approved',t:'blue'}],
+    reasons:[{t:'You sold 8 Explorer-class SUVs in the last 6 months — proven seller on your lot',p:true},{t:'4WD trims turn 22% faster than 2WD in your zip code Oct–Mar',p:true},{t:'Condition report shows minor rear bumper scuff — est. $400–650 recon cost',p:false},{t:'94 similar SUVs listed within 50 miles — high competition may slow your turn',p:false}],
+    matchSignals:[
+      {label:'You sold 8 Explorer-class SUVs in the last 6 months — proven seller',impact:'up',weight:'Strong'},
+      {label:'4WD trim turns 22% faster than FWD in your market Oct–Mar',impact:'up',weight:'Strong'},
+      {label:'Fast turn history on your lot — 17–23 days avg for this class',impact:'up',weight:'Moderate'},
+      {label:'94 similar SUVs within 50 miles — high competition reduces urgency',impact:'down',weight:'Moderate'},
+      {label:'0 Explorers currently on your lot — no segment overlap',impact:'up',weight:'Moderate'},
+    ],
+    baseMatch:87, lotPenalty:0,
+    localDemand:'High', daysToTurn:'17–23 est.', condScore:'8.4/10', afc:true,
+    location:'Cedar Rapids, IA', miles:12, daysListed:1, vin:'1FMSK8DH4PGA31847' },
+  { id:3,  imgKey:'mache',  match:79, cat:'suv', priceDrop:{amount:1500, daysAgo:1},  ev:true,  fast:false, page:1,
+    title:'2023 Ford Mustang Mach-E Premium · AWD', meta:'19,800 mi · Battery health 94% · Single owner',
+    bid:28900, retail:34500, recon:400,  reconRange:"$300–550", tags:[{l:'EV — off-lease',t:'amber'},{l:'Battery health 94%',t:'green'},{l:'Longer turn est.',t:'amber'}],
+    reasons:[{t:'Battery health 94% — strong for 2023 vintage, reduces buyer concern',p:true},{t:'EV demand in Cedar Rapids up 34% YoY — growing buyer pool',p:true},{t:'Est. turn time 28–35 days vs your 26-day avg — slight inventory financing risk',p:false},{t:'Low recon cost needed — software update only',p:true}],
+    matchSignals:[
+      {label:'EV demand in Cedar Rapids up 34% — growing buyer pool',impact:'up',weight:'Strong'},
+      {label:'Battery health 94% — strong for 2023 vintage, supports retail price',impact:'up',weight:'Strong'},
+      {label:'Low recon cost est. — software update only',impact:'up',weight:'Moderate'},
+      {label:'Est. turn 27–35 days — above your 26-day lot average',impact:'down',weight:'Moderate'},
+      {label:'You have 1 EV on lot — low overlap, manageable exposure',impact:'up',weight:'Low'},
+    ],
+    baseMatch:82, lotPenalty:0,
+    localDemand:'Growing', daysToTurn:'27–36 est.', condScore:'9.1/10', afc:true,
+    location:'Chicago, IL', miles:328, daysListed:5, vin:'3FMTK3SU2PMA09341' },
+  { id:4,  imgKey:'f150',  match:77, cat:'truck', priceDrop:null, ev:false, fast:true,  page:1,
+    title:'2021 Ford F-150 XLT · SuperCrew · 4WD', meta:'38,900 mi · 1 owner · Clean title',
+    bid:29800, retail:35400, recon:800,  reconRange:"$650–950", tags:[{l:'Fast turn',t:'green'},{l:'Low competition',t:'green'},{l:'Financing approved',t:'blue'}],
+    reasons:[{t:'F-150 is the #1 searched truck in Cedar Rapids — consistent buyer demand',p:true},{t:'SuperCrew 4WD commands premium retail vs regular cab in your market',p:true},{t:'Recon estimate $700–900 — tires at 40%, minor interior wear',p:false},{t:'Low supply nearby means less price pressure at retail',p:true}],
+    matchSignals:[
+      {label:'F-150 is the #1 searched truck in Cedar Rapids',impact:'up',weight:'Strong'},
+      {label:'Low competition — only 38 similar trucks within 50 miles',impact:'up',weight:'Strong'},
+      {label:'SuperCrew 4WD turns in 22 days avg on your lot',impact:'up',weight:'Strong'},
+      {label:'You already have 2 F-150s on lot — segment exposure increases risk',impact:'down',weight:'Reduces score'},
+      {label:'Score would be 91% with 0 F-150s on lot',impact:'info',weight:''},
+    ],
+    baseMatch:91, lotPenalty:14,
+    localDemand:'Very high', daysToTurn:'20–26 est.', condScore:'8.1/10', afc:true,
+    location:'Iowa City, IA', miles:28, daysListed:3, vin:'1FTFW1E89MFA74219' },
+  { id:5,  imgKey:'rav4',  match:74, cat:'suv', priceDrop:{amount:600, daysAgo:2}, priceTiming:'before-rise',  ev:false, fast:true,  page:1,
+    title:'2022 Toyota RAV4 XLE · AWD', meta:'31,200 mi · 1 owner · Clean Carfax',
+    bid:24600, retail:29800, recon:550, reconRange:"~$400–700", tags:[{l:'Strong resale',t:'green'},{l:'Fast turn',t:'green'}],
+    reasons:[{t:'RAV4 has strongest resale value in the compact SUV segment — holds price well',p:true},{t:'AWD commands $1,800–2,200 premium over FWD in Cedar Rapids winters',p:true},{t:'94 SUVs listed nearby — price competitively at listing to stand out',p:false},{t:'Low recon cost estimate — near retail-ready condition',p:true}],
+    matchSignals:[
+      {label:'RAV4 has strongest resale value in compact SUV segment',impact:'up',weight:'Strong'},
+      {label:'AWD commands $1,800–2,200 premium in Cedar Rapids winters',impact:'up',weight:'Strong'},
+      {label:'Near retail-ready condition — low recon cost keeps margin intact',impact:'up',weight:'Moderate'},
+      {label:'94 SUVs listed within 50 miles — competitive market',impact:'down',weight:'Moderate'},
+      {label:'You have 3 SUVs on lot similar to this class — mild overlap',impact:'down',weight:'Low'},
+    ],
+    baseMatch:79, lotPenalty:5,
+    localDemand:'High', daysToTurn:'19–25 est.', condScore:'8.7/10', afc:true,
+    location:'Waterloo, IA', miles:58, daysListed:4, vin:'2T3RWRFV4NW184302' },
+  { id:6,  imgKey:'grandcherokee',  match:72, cat:'suv',   ev:false, fast:false, page:2,
+    title:'2021 Jeep Grand Cherokee Laredo · 4WD', meta:'44,100 mi · 2 owners · Clean title',
+    bid:22400, retail:27600, recon:900,  reconRange:"$700–1,100", tags:[{l:'Financing approved',t:'blue'},{l:'4WD premium',t:'green'}],
+    reasons:[{t:'Jeep 4WD trims sell well in Iowa — strong seasonal demand Oct–Mar',p:true},{t:'Est. profit $4,300 after recon cost — above your lot average',p:true},{t:'2 owners slightly reduces buyer confidence — address in listing description',p:false},{t:'Recon est. $800–1,000 — brakes and tire rotation needed',p:false}],
+    matchSignals:[
+      {label:'Jeep 4WD trims sell well in Iowa — strong Oct–Mar demand',impact:'up',weight:'Strong'},
+      {label:'Projected gross above your lot average for this price tier',impact:'up',weight:'Moderate'},
+      {label:'2 owners slightly reduces buyer confidence vs single owner',impact:'down',weight:'Low'},
+      {label:'Recon needed — brakes and tire rotation adds cost uncertainty',impact:'down',weight:'Moderate'},
+      {label:'No Grand Cherokee on your lot currently — no overlap',impact:'up',weight:'Moderate'},
+    ],
+    baseMatch:74, lotPenalty:0,
+    localDemand:'Moderate', daysToTurn:'24–32 est.', condScore:'7.4/10', afc:true,
+    location:'Dubuque, IA', miles:84, daysListed:7, vin:'1C4RJFBG4MC731856' },
+  { id:7,  imgKey:'sierra',  match:70, cat:'truck', ev:false, fast:true,  page:2,
+    title:'2020 GMC Sierra 1500 SLE · Crew Cab', meta:'52,300 mi · Fleet maintained · 1 owner',
+    bid:26100, retail:31200, recon:750, reconRange:"~$550–950", tags:[{l:'Fleet maintained',t:'blue'},{l:'Fast turn',t:'green'}],
+    reasons:[{t:'Fleet maintenance records available — full service history reduces buyer hesitation',p:true},{t:'Sierra crew cab competes directly with Silverado — strong demand segment',p:true},{t:'Higher mileage at 52K — price accordingly vs lower-mile competitors nearby',p:false},{t:'Est. profit $4,350 after recon cost',p:true}],
+    matchSignals:[
+      {label:'Fleet maintenance records available — full service history',impact:'up',weight:'Strong'},
+      {label:'Sierra crew cab competes directly with Silverado — proven segment',impact:'up',weight:'Strong'},
+      {label:'Higher mileage at 52K — reduces buyer pool slightly',impact:'down',weight:'Moderate'},
+      {label:'You have 1 similar truck on lot — manageable exposure',impact:'down',weight:'Low'},
+      {label:'Fast-turn truck segment — 21–27 days avg in your market',impact:'up',weight:'Moderate'},
+    ],
+    baseMatch:73, lotPenalty:3,
+    localDemand:'High', daysToTurn:'21–27 est.', condScore:'7.6/10', afc:true,
+    location:'Davenport, IA', miles:97, daysListed:6, vin:'3GTU9DED4LG184927' },
+  { id:8,  imgKey:'crv',  match:68, cat:'suv',   ev:false, fast:false, page:2,
+    title:'2022 Honda CR-V EX · AWD', meta:'27,800 mi · 1 owner · Dealer serviced',
+    bid:23200, retail:28100, recon:480, reconRange:"~$350–600", tags:[{l:'Low recon cost',t:'green'},{l:'Financing approved',t:'blue'}],
+    reasons:[{t:'CR-V is a reliable volume seller — consistent demand across all seasons',p:true},{t:'Low recon cost estimate — dealer serviced, near retail-ready',p:true},{t:'High SUV competition nearby — price at or slightly below median to move fast',p:false},{t:'AWD adds buyer appeal in Iowa market',p:true}],
+    matchSignals:[
+      {label:'CR-V has strong brand loyalty — Honda buyers return to Honda',impact:'up',weight:'Strong'},
+      {label:'AWD trim in demand year-round in Iowa climate',impact:'up',weight:'Moderate'},
+      {label:'Dealer serviced — full records reduce buyer hesitation',impact:'up',weight:'Moderate'},
+      {label:'Compact SUV is most competitive segment — 94 listings nearby',impact:'down',weight:'Strong'},
+      {label:'1 similar SUV on lot — low overlap risk',impact:'up',weight:'Low'},
+    ],
+    baseMatch:70, lotPenalty:2,
+    localDemand:'High', daysToTurn:'22–28 est.', condScore:'8.5/10', afc:true,
+    location:'Sioux City, IA', miles:214, daysListed:3, vin:'2HKRW2H88NH184632' },
+  { id:9,  imgKey:'ram1500',  match:65, cat:'truck', ev:false, fast:false, page:2,
+    title:'2019 Ram 1500 Big Horn · Crew Cab · 4WD', meta:'61,400 mi · 2 owners · Clean title',
+    bid:21800, retail:26400, recon:1200, reconRange:"$1,000–1,400", tags:[{l:'Value segment',t:'gray'},{l:'High mileage',t:'amber'}],
+    reasons:[{t:'Lower price point opens buyer pool — entry-level truck buyers active in your market',p:true},{t:'Ram 1500 has strong brand loyalty in Midwest — motivated buyer segment',p:true},{t:'Higher mileage and recon cost reduce gross — est. $3,400 after recon cost',p:false},{t:'2 owners at this mileage is expected — price accordingly',p:false}],
+    matchSignals:[
+      {label:'Bolt EV pricing dropped significantly — strong value proposition',impact:'up',weight:'Strong'},
+      {label:'Low acquisition cost limits your financing risk',impact:'up',weight:'Moderate'},
+      {label:'EV demand growing in Cedar Rapids — buyer pool expanding',impact:'up',weight:'Moderate'},
+      {label:'Older EV vintage — some buyers cautious about battery longevity',impact:'down',weight:'Moderate'},
+      {label:'Only 1 EV on lot currently — no segment saturation',impact:'up',weight:'Low'},
+    ],
+    baseMatch:67, lotPenalty:0,
+    localDemand:'High', daysToTurn:'25–33 est.', condScore:'7.1/10', afc:true,
+    location:'Milwaukee, WI', miles:298, daysListed:11, vin:'1C6SRFBT4KN841927' },
+  { id:10,  imgKey:'equinox', match:63, cat:'suv',   ev:false, fast:false, page:2,
+    title:'2021 Chevrolet Equinox LT · FWD', meta:'39,600 mi · 1 owner · Clean Carfax',
+    bid:18900, retail:23200, recon:620, reconRange:"~$450–800", tags:[{l:'Entry SUV',t:'gray'},{l:'Financing approved',t:'blue'}],
+    reasons:[{t:'Equinox is a high-volume entry SUV — broad buyer appeal at this price point',p:true},{t:'Single owner with clean Carfax — supports retail price',p:true},{t:'FWD limits winter appeal vs AWD competitors in Iowa',p:false},{t:'Est. profit $3,680 after recon cost — slightly below your lot avg',p:false}],
+    matchSignals:[
+      {label:'Full-size truck — consistently top-selling category in Iowa',impact:'up',weight:'Strong'},
+      {label:'Silverado brand recognition strong in Cedar Rapids market',impact:'up',weight:'Moderate'},
+      {label:'Higher mileage at 67K reduces buyer pool vs lower-mile options',impact:'down',weight:'Strong'},
+      {label:'You have 1 Silverado on lot — low segment overlap',impact:'down',weight:'Low'},
+      {label:'Price tier appeals to budget truck buyers — distinct from your higher-priced units',impact:'up',weight:'Moderate'},
+    ],
+    baseMatch:65, lotPenalty:0,
+    localDemand:'Moderate', daysToTurn:'23–30 est.', condScore:'8.0/10', afc:true,
+    location:'Omaha, NE', miles:312, daysListed:9, vin:'2GNAXKEV4M6184731' },
+  { id:11,  imgKey:'bolt', match:61, cat:'suv',   ev:true,  fast:false, page:3,
+    title:'2022 Chevrolet Bolt EV LT', meta:'22,400 mi · 1 owner · Battery health 91%',
+    bid:18400, retail:23800, recon:300, reconRange:"~$200–400", tags:[{l:'EV — growing demand',t:'blue'},{l:'Low recon cost',t:'green'}],
+    reasons:[{t:'Bolt is the most affordable EV entry point — broadest buyer pool in EV segment',p:true},{t:'Battery health 91% — strong for age, reassures hesitant EV buyers',p:true},{t:'EV charging infrastructure still limited in Cedar Rapids — may extend turn time',p:false},{t:'Low recon cost — ready to retail quickly',p:true}],
+    matchSignals:[
+      {label:'Tesla is the most recognized EV brand — easier retail sell',impact:'up',weight:'Strong'},
+      {label:'Higher acquisition cost increases financing risk per day',impact:'down',weight:'Moderate'},
+      {label:'EV demand in Cedar Rapids up 34% — growing buyer pool',impact:'up',weight:'Strong'},
+      {label:'Est. turn 27–36 days — above your 26-day average',impact:'down',weight:'Moderate'},
+      {label:'No Tesla on lot currently — unique inventory differentiator',impact:'up',weight:'Moderate'},
+    ],
+    baseMatch:63, lotPenalty:0,
+    localDemand:'Growing', daysToTurn:'27–35 est.', condScore:'8.3/10', afc:true,
+    location:'Minneapolis, MN', miles:398, daysListed:4, vin:'1G1FY6S06N4184823' },
+  { id:12,  imgKey:'escape', match:59, cat:'suv',   ev:false, fast:false, page:3,
+    title:'2020 Ford Escape SEL · AWD', meta:'48,200 mi · 2 owners · Dealer serviced',
+    bid:17600, retail:21900, recon:740, reconRange:"~$550–900", tags:[{l:'Value pick',t:'gray'},{l:'AWD premium',t:'green'}],
+    reasons:[{t:'AWD adds seasonal appeal — Iowa winter buyers actively seek it',p:true},{t:'Escape has broad buyer appeal across age groups',p:true},{t:'2 owners at this mileage — normal, price reflects it',p:false},{t:'Est. profit $3,560 — below lot avg but low risk at this price point',p:false}],
+    matchSignals:[
+      {label:'AWD adds seasonal value — Iowa winter demand Oct–Mar',impact:'up',weight:'Moderate'},
+      {label:'Low price tier broadens buyer pool significantly',impact:'up',weight:'Moderate'},
+      {label:'Compact sedan is most competitive segment — 112 listings nearby',impact:'down',weight:'Strong'},
+      {label:'2 owners reduces buyer confidence at this price point',impact:'down',weight:'Low'},
+      {label:'You have 2 sedans on lot — mild overlap risk',impact:'down',weight:'Low'},
+    ],
+    baseMatch:62, lotPenalty:3,
+    localDemand:'Moderate', daysToTurn:'25–33 est.', condScore:'7.5/10', afc:true,
+    location:'Kansas City, MO', miles:394, daysListed:14, vin:'1FMCU9J9XLUB41827' },
+  { id:13,  imgKey:'f150old', match:57, cat:'truck', ev:false, fast:false, page:3,
+    title:'2018 Ford F-150 XL · Regular Cab · 4WD', meta:'74,100 mi · 1 owner · Work truck',
+    bid:16800, retail:20600, recon:1400, reconRange:"~$1,050–1,750", tags:[{l:'Work truck',t:'gray'},{l:'High recon cost',t:'amber'}],
+    reasons:[{t:'Work truck buyers are a distinct segment — less price sensitive on aesthetics',p:true},{t:'Single owner work history — typical wear for this use case',p:true},{t:'Higher recon cost at $1,200–1,600 — paint and interior work needed',p:false},{t:'Est. profit $2,400 — below average but low financing at risk',p:false}],
+    matchSignals:[
+      {label:'Work truck buyers are a distinct segment — brand loyalty strong',impact:'up',weight:'Moderate'},
+      {label:'Single owner work history — consistent use, predictable wear',impact:'up',weight:'Moderate'},
+      {label:'High mileage at 74K limits retail buyer pool significantly',impact:'down',weight:'Strong'},
+      {label:'High recon cost estimate — reduces margin headroom substantially',impact:'down',weight:'Strong'},
+      {label:'No similar work truck on lot — no direct overlap',impact:'up',weight:'Low'},
+    ],
+    baseMatch:60, lotPenalty:0,
+    localDemand:'Moderate', daysToTurn:'27–36 est.', condScore:'6.8/10', afc:true,
+    location:'Rockford, IL', miles:218, daysListed:18, vin:'1FTMF1CB2JKF41928' },
+  { id:14,  imgKey:'rogue', match:55, cat:'suv',   ev:false, fast:false, page:3,
+    title:'2021 Nissan Rogue SV · AWD', meta:'36,800 mi · 2 owners · Clean title',
+    bid:19200, retail:23800, recon:580, reconRange:"~$450–700", tags:[{l:'Competitive segment',t:'amber'},{l:'Financing approved',t:'blue'}],
+    reasons:[{t:'Rogue is a high-volume compact SUV — reliable seller nationally',p:true},{t:'AWD appeals to Iowa winter buyers',p:true},{t:'Competitive segment with many alternatives nearby — pricing discipline critical',p:false},{t:'2 owners reduces buyer confidence slightly at this price point',p:false}],
+    matchSignals:[
+      {label:'Rogue is a high-volume nationally — reliable seller',impact:'up',weight:'Moderate'},
+      {label:'AWD appeals to Iowa winter buyers — seasonal lift',impact:'up',weight:'Moderate'},
+      {label:'2 owners at this mileage — common, slight confidence impact',impact:'down',weight:'Low'},
+      {label:'Competitive compact SUV segment — pricing discipline critical',impact:'down',weight:'Strong'},
+      {label:'1 similar compact SUV on lot — manageable exposure',impact:'down',weight:'Low'},
+    ],
+    baseMatch:58, lotPenalty:3,
+    localDemand:'Moderate', daysToTurn:'26–34 est.', condScore:'7.8/10', afc:true,
+    location:'Madison, WI', miles:276, daysListed:8, vin:'5N1AT3BA2MC741928' },
+  { id:15,  imgKey:'tucson', match:53, cat:'suv',   ev:false, fast:false, page:3,
+    title:'2020 Hyundai Tucson SEL · AWD', meta:'43,500 mi · 1 owner · Clean Carfax',
+    bid:16400, retail:20200, recon:660, reconRange:"~$500–800", tags:[{l:'Value segment',t:'gray'},{l:'Single owner',t:'green'}],
+    reasons:[{t:'Single owner clean Carfax — strong buyer trust signal at this price point',p:true},{t:'Low entry price broadens buyer pool significantly',p:true},{t:'Hyundai brand perception has improved but still below Toyota/Honda resale',p:false},{t:'Est. profit $3,140 — acceptable at this price tier',p:false}],
+    matchSignals:[
+      {label:'Single owner clean Carfax — strong buyer trust signal',impact:'up',weight:'Strong'},
+      {label:'Low entry price broadens buyer pool significantly',impact:'up',weight:'Moderate'},
+      {label:'Hyundai resale lags Toyota and Honda in your market',impact:'down',weight:'Moderate'},
+      {label:'Competitive compact SUV market — many alternatives nearby',impact:'down',weight:'Strong'},
+      {label:'No Tucson on lot currently — no segment overlap',impact:'up',weight:'Low'},
+    ],
+    baseMatch:55, lotPenalty:0,
+    localDemand:'Moderate', daysToTurn:'27–35 est.', condScore:'7.9/10', afc:true,
+    location:'Peoria, IL', miles:184, daysListed:12, vin:'KM8J3CA47LU041927' },
+  { id:16,  imgKey:'camry', match:51, cat:'sedan', ev:false, fast:false, page:4,
+    title:'2022 Toyota Camry LE · FWD', meta:'28,100 mi · 1 owner · Dealer serviced',
+    bid:19800, retail:24200, recon:420, reconRange:"~$300–500", tags:[{l:'Strong resale',t:'green'},{l:'Weak local demand',t:'amber'}],
+    reasons:[{t:'Camry has best resale value in sedan segment — supports retail price',p:true},{t:'Low recon cost — near retail-ready, dealer serviced',p:true},{t:'Sedan demand declining in Cedar Rapids — search volume down 6 pts',p:false},{t:'112 sedans within 50 miles — highly competitive, price at market median',p:false}],
+    matchSignals:[
+      {label:'Camry has best resale value in sedan segment nationally',impact:'up',weight:'Strong'},
+      {label:'Near retail-ready condition — low recon keeps margin intact',impact:'up',weight:'Moderate'},
+      {label:'Sedan demand declining in Cedar Rapids — search volume down 6 pts',impact:'down',weight:'Strong'},
+      {label:'112 sedans within 50 miles — highly competitive, must price at median',impact:'down',weight:'Strong'},
+      {label:'You have 3 sedans on lot — increasing segment saturation',impact:'down',weight:'Moderate'},
+    ],
+    baseMatch:58, lotPenalty:7,
+    localDemand:'Moderate', daysToTurn:'28–38 est.', condScore:'8.8/10', afc:true,
+    location:'Springfield, IL', miles:311, daysListed:6, vin:'4T1C11AK9NU041928' },
+  { id:17,  imgKey:'mazda6', match:48, cat:'sedan', ev:false, fast:false, page:4,
+    title:'2021 Mazda6 Grand Touring · FWD', meta:'33,400 mi · 1 owner · Clean title',
+    bid:17600, retail:21800, recon:510, reconRange:"~$400–650", tags:[{l:'Premium feel',t:'blue'},{l:'Niche buyer',t:'amber'}],
+    reasons:[{t:'Mazda6 has premium interior — appeals to buyers stepping down from luxury brands',p:true},{t:'Single owner, clean title at reasonable mileage',p:true},{t:'Mazda sedan is a niche segment — smaller buyer pool than Camry or Accord',p:false},{t:'Sedan competition high — will need targeted marketing to find the right buyer',p:false}],
+    matchSignals:[
+      {label:'Premium interior appeals to buyers stepping down from luxury brands',impact:'up',weight:'Moderate'},
+      {label:'Single owner clean title at reasonable mileage',impact:'up',weight:'Moderate'},
+      {label:'Mazda sedan is a niche segment — smaller buyer pool than Camry',impact:'down',weight:'Strong'},
+      {label:'Sedan market in Cedar Rapids is declining',impact:'down',weight:'Strong'},
+      {label:'2 sedans on lot — overlap adds turn risk',impact:'down',weight:'Moderate'},
+    ],
+    baseMatch:53, lotPenalty:5,
+    localDemand:'Moderate', daysToTurn:'30–40 est.', condScore:'8.2/10', afc:true,
+    location:'Ames, IA', miles:49, daysListed:9, vin:'JM1GL1VM0M1418273' },
+  { id:18,  imgKey:'civic', match:46, cat:'sedan', ev:false, fast:false, page:4,
+    title:'2020 Honda Civic Sport · FWD', meta:'41,800 mi · 2 owners · Clean Carfax',
+    bid:14200, retail:17800, recon:620, reconRange:"~$450–800", tags:[{l:'Entry price',t:'gray'},{l:'High competition',t:'amber'}],
+    reasons:[{t:'Lowest bid price on the list — minimal inventory financing risk',p:true},{t:'Civic has broad young buyer appeal — active social/digital search segment',p:true},{t:'Compact sedan has highest competition density in your market',p:false},{t:'Est. profit $2,980 — below lot average',p:false}],
+    matchSignals:[
+      {label:'Civic has broad young buyer appeal — active search segment',impact:'up',weight:'Moderate'},
+      {label:'Lowest bid price — minimal financing risk per day',impact:'up',weight:'Moderate'},
+      {label:'Compact sedan has highest competition density in your market',impact:'down',weight:'Strong'},
+      {label:'2 owners at this mileage — expected but reduces confidence',impact:'down',weight:'Low'},
+      {label:'3 sedans already on lot — high segment saturation',impact:'down',weight:'Strong'},
+    ],
+    baseMatch:52, lotPenalty:6,
+    localDemand:'Moderate', daysToTurn:'29–39 est.', condScore:'7.3/10', afc:true,
+    location:'Davenport, IA', miles:97, daysListed:16, vin:'2HGFC2F69LH418273' },
+  { id:19,  imgKey:'jetta', match:44, cat:'sedan', ev:false, fast:false, page:4,
+    title:'2019 Volkswagen Jetta SEL · FWD', meta:'47,200 mi · 1 owner · Clean title',
+    bid:13800, retail:17200, recon:780, reconRange:"~$600–1,000", tags:[{l:'European brand',t:'gray'},{l:'Niche buyer',t:'amber'}],
+    reasons:[{t:'VW buyers are brand loyal — targeted marketing to VW owners effective',p:true},{t:'Single owner clean title at reasonable price point',p:true},{t:'European brand perception mixed in Cedar Rapids market',p:false},{t:'Est. profit $2,620 — below average, consider carefully',p:false}],
+    matchSignals:[
+      {label:'VW buyers are brand loyal — targeted marketing effective',impact:'up',weight:'Moderate'},
+      {label:'Single owner clean title at accessible price point',impact:'up',weight:'Moderate'},
+      {label:'European brand perception mixed in Cedar Rapids market',impact:'down',weight:'Moderate'},
+      {label:'High mileage at 47K for a 2019 — reduces buyer pool',impact:'down',weight:'Moderate'},
+      {label:'Sedan market declining — combined with niche brand, limited demand',impact:'down',weight:'Strong'},
+    ],
+    baseMatch:49, lotPenalty:5,
+    localDemand:'Low', daysToTurn:'32–42 est.', condScore:'7.6/10', afc:true,
+    location:'Indianapolis, IN', miles:484, daysListed:21, vin:'3VWC57BU9KM418274' },
+  { id:20,  imgKey:'accord', match:42, cat:'sedan', ev:false, fast:false, page:4,
+    title:'2021 Honda Accord Sport · FWD', meta:'52,100 mi · 2 owners · Clean history',
+    bid:17200, retail:20800, recon:780, reconRange:"~$600–1,000", tags:[{l:'Reliable nationally',t:'gray'},{l:'Weak local demand',t:'amber'},{l:'High competition',t:'amber'}],
+    reasons:[{t:'Low bid price reduces risk — lowest financing at risk',p:true},{t:'Turn estimate 24–28 days — within target if priced right',p:true},{t:'Sedan demand in Cedar Rapids declining — search volume down 6 pts last month',p:false},{t:'112 sedans listed within 50 miles — buyers have many alternatives',p:false}],
+    matchSignals:[
+      {label:'Accord is nationally reliable — broad buyer recognition',impact:'up',weight:'Moderate'},
+      {label:'Turn estimate 23–30 days — within target if priced competitively',impact:'up',weight:'Low'},
+      {label:'Sedan demand in Cedar Rapids declining — search volume down 6 pts',impact:'down',weight:'Strong'},
+      {label:'112 sedans listed within 50 miles — highly competitive market',impact:'down',weight:'Strong'},
+      {label:'4 sedans already on lot including aging units — significant overlap',impact:'down',weight:'Strong'},
+    ],
+    baseMatch:48, lotPenalty:6,
+    localDemand:'Moderate', daysToTurn:'23–30 est.', condScore:'7.6/10', afc:true,
+    location:'Cedar Falls, IA', miles:18, daysListed:13, vin:'1HGCV1F34MA418275' },
+];
+
+const categories = [
+  {label:'SUV', count:18, color:'#1B3A6B', avgDays:27},
+  {label:'Truck', count:10, color:'#2E5FA3', avgDays:19},
+  {label:'Sedan', count:8, color:'#3B6D11', avgDays:32},
+  {label:'Minivan', count:4, color:'#BA7517', avgDays:38},
+  {label:'EV', count:3, color:'#185FA5', avgDays:26},
+  {label:'Other', count:2, color:'#888', avgDays:21},
+];
+
+const inventory = [
+  {id:1, name:'2023 Ford Explorer XLT',       sub:'SUV · 4WD · 28,400 mi',         days:6,  bought:26800, list:31200, margin:2800, status:'ok'},
+  {id:2, name:'2022 Chevy Silverado 1500',     sub:'Truck · Crew Cab · 41,200 mi',  days:11, bought:29400, list:36800, margin:3100, status:'ok'},
+  {id:3, name:'2021 Toyota RAV4 XLE',          sub:'SUV · AWD · 33,800 mi',         days:14, bought:22100, list:28400, margin:2200, status:'ok'},
+  {id:4, name:'2020 Ford F-150 XLT',           sub:'Truck · SuperCrew · 58,400 mi', days:18, bought:27800, list:33500, margin:2400, status:'ok'},
+  {id:5, name:'2022 GMC Terrain SLE',          sub:'SUV · FWD · 29,100 mi',         days:21, bought:19200, list:24900, margin:1800, status:'ok'},
+  {id:6, name:'2023 Ford Mustang Mach-E',      sub:'EV · AWD · 19,800 mi',          days:24, bought:28900, list:34200, margin:3800, status:'ok'},
+  {id:7, name:'2021 Honda Accord Sport',       sub:'Sedan · FWD · 52,100 mi',       days:32, bought:17200, list:20800, margin:920,  status:'warn'},
+  {id:8, name:'2020 Toyota Sienna LE',         sub:'Minivan · AWD · 61,200 mi',     days:35, bought:21400, list:26400, margin:1100, status:'warn'},
+  {id:9, name:'2021 Jeep Grand Cherokee',      sub:'SUV · 4WD · 44,800 mi',         days:37, bought:23800, list:29800, margin:1400, status:'warn'},
+  {id:10,name:'2020 Nissan Altima SR',         sub:'Sedan · FWD · 47,300 mi',       days:41, bought:15600, list:17400, margin:310,  status:'danger'},
+  {id:11,name:'2019 Dodge Journey SE',         sub:'SUV · FWD · 68,900 mi',         days:46, bought:14200, list:15800, margin:-120, status:'danger'},
+  {id:12,name:'2020 Chrysler Pacifica',        sub:'Minivan · FWD · 55,600 mi',     days:52, bought:19800, list:22100, margin:-380, status:'danger'},
+];
+
+// Maps model keywords to how many are currently on the lot
+const lotCounts = {
+  'Explorer':    2,
+  'Silverado':   1,
+  'RAV4':        1,
+  'F-150':       2,
+  'Terrain':     1,
+  'Mach-E':      1,
+  'Accord':      1,
+  'Sienna':      1,
+  'Grand Cherokee': 1,
+  'Altima':      1,
+  'Journey':     1,
+  'Pacifica':    1,
+  'Equinox':     0,
+  'CR-V':        0,
+  'Rogue':       0,
+  'Camry':       0,
+  'Civic':       0,
+  'Bolt':        0,
+  'Escape':      0,
+  'Tucson':      0,
+  'Sierra':      1,
+  'Ram':         0,
+  'Mazda6':      0,
+  'Jetta':       0,
+};
+
+function getLotCount(title) {
+  for (const [model, count] of Object.entries(lotCounts)) {
+    if (title.includes(model)) return count;
+  }
+  return 0;
+}
+
+const segments = [
+  {
+    id:'suv', name:'SUV / Crossover', sub:'Explorer, RAV4, Grand Cherokee class',
+    demandScore:88, demandTrend:'+8', demandDir:'up',
+    bars:[55,60,62,70,75,80,88],
+    supplyCount:94, supplyLevel:'high', supplyTrend:'+18 vs last mo',
+    wholesaleAvg:22400, wholesaleTrend:'+2.1%', wholesaleDir:'up', wholesaleLabel:'Rising', wholesaleNote:'A $20K SUV costs ~$420 more · a $28K SUV costs ~$590 more at current auction',
+    estDays:24, opp:'hold',
+    yourLotUnits:8, mktAbsorptionDays:24,
+    purchaseTiming: { status:'advantage', detail:'Your 8 SUVs were bought before auction prices rose $420 this month. Your cost is lower than most competitors on the market right now.' },
+    buySignal:'Competitive', buyReason:'Strong demand but 94 competitors nearby — price within $500 of market median to move fast',
+    nearby:[
+      {name:'2022 Honda CR-V EX',dist:'4.2mi',price:27900,days:11},
+      {name:'2021 Toyota RAV4 XLE',dist:'8.7mi',price:28100,days:18},
+      {name:'2022 Ford Escape SE',dist:'12.1mi',price:26400,days:6},
+      {name:'2023 Chevrolet Equinox LT',dist:'15.3mi',price:29800,days:22},
+    ],
+    insight:'Buyer interest is high — but 94 competitors are also listing SUVs within 50 miles, and buyers choose the cheapest option first. Here is the opportunity: auction prices rose $420 this month, meaning competitors who bought recently paid more and are forced to list higher. You bought before the increase — your cost basis is lower. List $300–400 below the market median, move faster than everyone else, and still hit your margin target.',
+  },
+  {
+    id:'truck', name:'Pickup Truck', sub:'F-150, Silverado, Ram 1500 class',
+    demandScore:92, demandTrend:'+14', demandDir:'up',
+    bars:[60,65,68,72,78,85,92],
+    supplyCount:38, supplyLevel:'low', supplyTrend:'-6 vs last mo',
+    wholesaleAvg:29800, wholesaleTrend:'-1.8%', wholesaleDir:'down', wholesaleLabel:'Falling', wholesaleNote:'A $25K truck costs ~$450 less · a $32K truck costs ~$580 less at current auction',
+    estDays:17, opp:'buy',
+    yourLotUnits:2, mktAbsorptionDays:17,
+    purchaseTiming: { status:'neutral', detail:'Truck auction prices are falling right now — if you buy this month you get a better deal than dealers who bought last month.' },
+    buySignal:'Strong market', buyReason:'High demand, low supply, prices falling — move fast',
+    nearby:[
+      {name:'2021 Ram 1500 Big Horn',dist:'6.1mi',price:34900,days:8},
+      {name:'2022 Ford F-150 XLT',dist:'11.4mi',price:37200,days:14},
+      {name:'2020 GMC Sierra 1500 SLE',dist:'19.8mi',price:33800,days:21},
+    ],
+    insight:'Best buy signal in your market. Demand 92/100, supply falling, wholesale prices down $310. Your 2 trucks cover only ~34 days — you are understocked. Buy 2–3 units now before prices recover.',
+  },
+  {
+    id:'sedan', name:'Sedan', sub:'Accord, Camry, Altima class',
+    demandScore:51, demandTrend:'-6', demandDir:'down',
+    bars:[72,68,65,60,58,54,51],
+    supplyCount:112, supplyLevel:'high', supplyTrend:'+24 vs last mo',
+    wholesaleAvg:14200, wholesaleTrend:'-1.3%', wholesaleDir:'down', wholesaleLabel:'Falling', wholesaleNote:'Reflects weak demand — dealers discounting to move stock, not a buying opportunity',
+    estDays:38, opp:'avoid',
+    yourLotUnits:3, mktAbsorptionDays:38,
+    purchaseTiming: { status:'watch', detail:'Sedan auction prices are falling — which sounds good but reflects weak demand. Dealers are discounting to move stock. Your existing 3 sedans may need price drops to compete.' },
+    buySignal:'Price sharp', buyReason:'112 competitors within 50 miles — right sedan at right price will sell, but expect 35+ days and tight margins',
+    nearby:[
+      {name:'2021 Honda Accord LX',dist:'2.8mi',price:19400,days:28},
+      {name:'2020 Toyota Camry LE',dist:'5.2mi',price:20100,days:31},
+      {name:'2021 Nissan Altima SR',dist:'7.9mi',price:18900,days:44},
+      {name:'2020 Honda Accord Sport',dist:'9.1mi',price:19200,days:39},
+      {name:'2021 Hyundai Sonata SE',dist:'14.6mi',price:18400,days:52},
+    ],
+    insight:'Weakest segment in Cedar Rapids. Demand down 6 pts, 112 competitors, avg 38 days to sell. Your 3 sedans already aging. Do not buy more until supply clears.',
+  },
+  {
+    id:'minivan', name:'Minivan', sub:'Sienna, Odyssey, Pacifica class',
+    demandScore:44, demandTrend:'-3', demandDir:'down',
+    bars:[52,50,49,47,46,45,44],
+    supplyCount:28, supplyLevel:'med', supplyTrend:'+4 vs last mo',
+    wholesaleAvg:18200, wholesaleTrend:'-1.4%', wholesaleDir:'down', wholesaleLabel:'Falling', wholesaleNote:'Falling prices reflect slow demand — clear existing inventory before buying more',
+    estDays:44, opp:'avoid',
+    yourLotUnits:2, mktAbsorptionDays:44,
+    purchaseTiming: { status:'watch', detail:'Your 2 minivans are aging. Falling auction prices mean other dealers are offloading stock. Price yours aggressively to clear before more inventory hits the market.' },
+    buySignal:'Patient buyers', buyReason:'Smaller buyer pool — minivans sell but take 44 days avg. Only buy at strong discount to offset daily financing cost',
+    nearby:[
+      {name:'2021 Toyota Sienna LE',dist:'8.3mi',price:24200,days:35},
+      {name:'2020 Honda Odyssey EX',dist:'13.7mi',price:25800,days:41},
+      {name:'2019 Chrysler Pacifica',dist:'18.2mi',price:21900,days:62},
+    ],
+    insight:'Minivans are turning at 44 days avg — your slowest segment. Demand is falling and other dealers are discounting to clear stock, which is why auction prices are dropping. Focus on moving your 2 minivans before buying more.',
+  },
+  {
+    id:'ev', name:'Electric Vehicle', sub:'Mach-E, Model 3, Bolt class',
+    demandScore:67, demandTrend:'+22', demandDir:'up',
+    bars:[28,33,38,44,50,58,67],
+    supplyCount:19, supplyLevel:'low', supplyTrend:'+7 vs last mo',
+    wholesaleAvg:21400, wholesaleTrend:'-3.8%', wholesaleDir:'down', wholesaleLabel:'Falling fast', wholesaleNote:'Off-lease EVs entering market — a $25K EV costs ~$950 less than 30 days ago. Best buying window in 12 months',
+    estDays:28, opp:'buy',
+    yourLotUnits:1, mktAbsorptionDays:28,
+    purchaseTiming: { status:'advantage', detail:'EV auction prices are falling fast — down $680 this month. Dealers who bought EVs last month paid significantly more than you can pay today. This is a buying window.' },
+    buySignal:'Growing window', buyReason:'Demand up 22 pts, supply still low, prices falling — good 6-12 month window before off-lease surge saturates market',
+    nearby:[
+      {name:'2023 Tesla Model 3 RWD',dist:'11.2mi',price:36400,days:18},
+      {name:'2022 Chevy Bolt EV LT',dist:'16.8mi',price:24900,days:22},
+      {name:'2023 Ford Mustang Mach-E',dist:'22.4mi',price:34100,days:31},
+    ],
+    insight:'Best buying window for EVs right now. Buyer interest up 22 pts this month — more people in Cedar Rapids are actively searching for EVs. At the same time, auction prices are falling $680 this month as off-lease vehicles enter the market. You can buy cheaper today than last month and sell into growing demand. Buy 1–2 more units before this window closes.',
+  },
+];
+
+/* ══ STATE ══ */
+let buyFilter = 'all', buySort = 'recommended', lotFilter = 'all', segSearch = '', activeVehicle = null, activeSeg = null;
+
+/* ══ TAB SWITCH ══ */
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  if (id === 'pulse') renderSegs();
+  if (id === 'lot') { renderActions(); renderCategories(); renderErosion(); renderAging(); }
+}
+
+/* ══ SAVED SEARCH ALERTS ══ */
+let activeAlerts = [];
+
+function openAlertModal() {
+  document.getElementById('alert-modal').style.display = 'flex';
+}
+function closeAlertModal() {
+  document.getElementById('alert-modal').style.display = 'none';
+}
+function saveAlert() {
+  const type  = document.getElementById('al-type').value;
+  const model = document.getElementById('al-model').value.trim();
+  const price = document.getElementById('al-price').value.trim();
+  const dist  = document.getElementById('al-dist').value;
+  const label = model ? model : type;
+  activeAlerts.push({ label, price, dist });
+  closeAlertModal();
+  renderAlertsBar();
+  // Brief confirmation flash
+  const btn = document.querySelector('[onclick="openAlertModal()"]');
+  if (btn) { btn.innerHTML = '<i class="fa-solid fa-check"></i> Alert saved!'; btn.style.background='var(--green)'; btn.style.color='#fff'; setTimeout(()=>{ btn.innerHTML='<i class="fa-regular fa-bell"></i> Set Alert'; btn.style.background=''; btn.style.color=''; }, 2200); }
+}
+function removeAlert(i) {
+  activeAlerts.splice(i, 1);
+  renderAlertsBar();
+}
+function renderAlertsBar() {
+  const bar = document.getElementById('alerts-bar');
+  if (!activeAlerts.length) { bar.style.display = 'none'; bar.innerHTML = ''; return; }
+  bar.style.display = 'flex';
+  bar.className = 'alerts-bar';
+  bar.innerHTML = `
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <i class="fa-regular fa-bell" style="color:var(--green-txt);font-size:13px"></i>
+      <span style="font-size:12px;font-weight:600;color:var(--green-txt)">Active alerts</span>
+      ${activeAlerts.map((a,i) => `
+        <div class="alert-chip" onclick="removeAlert(${i})" title="Click to remove">
+          <i class="fa-solid fa-car"></i> ${a.label}${a.price?' · up to '+a.price:''} · ${a.dist}
+          <i class="fa-solid fa-xmark" style="color:var(--text2);margin-left:2px"></i>
+        </div>`).join('')}
+    </div>
+    <span style="font-size:11px;color:var(--green-txt)">You'll be notified when matches appear on OPENLANE</span>`;
+}
+
+/* ══ BUY TAB ══ */
+function margin(v) {
+  // Returns mid-point for sorting — display uses range
+  const reconMid = v.recon;
+  const transLo = 150, transHi = 250;
+  const days = parseInt(v.daysToTurn) || 20;
+  const daily = Math.round(v.bid * 0.0005);
+  const carryMid = daily * days;
+  return v.retail - v.bid - reconMid - 200 - carryMid;
+}
+function marginRange(v) {
+  const reconLo = Math.round(v.recon * 0.80 / 50) * 50;
+  const reconHi = Math.round(v.recon * 1.20 / 50) * 50;
+  const days = parseInt(v.daysToTurn) || 20;
+  const daily = Math.round(v.bid * 0.0005);
+  const carryLo = daily * Math.max(days - 5, 8);
+  const carryHi = daily * (days + 8);
+  const lo = v.retail - v.bid - reconHi - 250 - carryHi;
+  const hi = v.retail - v.bid - reconLo - 150 - carryLo;
+  return { lo, hi };
+}
+
+const PAGE_SIZE = 5;
+let currentPage = 1;
+
+function getPulse(v) {
+  const id = v.ev ? 'ev' : v.cat;
+  return segments.find(s => s.id === id) || null;
+}
+function demandLabel(score) {
+  if (score >= 80) return { text: 'High demand in your area', color: 'var(--green)', icon: 'fa-arrow-trend-up' };
+  if (score >= 60) return { text: 'Moderate demand in your area', color: 'var(--amber)', icon: 'fa-minus' };
+  return { text: 'Weak demand in your area', color: 'var(--red)', icon: 'fa-arrow-trend-down' };
+}
+function competitionLabel(level, count) {
+  if (level === 'low') return { text: `Low competition — ${count} similar vehicles within 50 miles`, color: 'var(--green)', icon: 'fa-check' };
+  if (level === 'med') return { text: `Moderate competition — ${count} similar vehicles within 50 miles`, color: 'var(--amber)', icon: 'fa-minus' };
+  return { text: `High competition — ${count} similar vehicles within 50 miles`, color: 'var(--red)', icon: 'fa-triangle-exclamation' };
+}
+
+function getFiltered() {
+  let list = vehicles.filter(v => {
+    if (buyFilter === 'all') return true;
+    if (buyFilter === 'suv') return v.cat === 'suv' && !v.ev;
+    if (buyFilter === 'truck') return v.cat === 'truck';
+    if (buyFilter === 'sedan') return v.cat === 'sedan';
+    if (buyFilter === 'ev') return v.ev;
+    if (buyFilter === 'fast') return v.fast;
+    return true;
+  });
+  // Apply sort
+  list = [...list].sort((a, b) => {
+    switch (buySort) {
+      case 'price-asc':    return a.bid - b.bid;
+      case 'price-desc':   return b.bid - a.bid;
+      case 'gross-desc':   return margin(b) - margin(a);
+      case 'days-asc':     return a.daysListed - b.daysListed;
+      case 'days-desc':    return b.daysListed - a.daysListed;
+      case 'distance-asc': return a.miles - b.miles;
+      default:             return b.match - a.match; // recommended
+    }
+  });
+  return list;
+}
+
+function getCounts() {
+  return {
+    all:    vehicles.length,
+    suv:    vehicles.filter(v => v.cat === 'suv' && !v.ev).length,
+    truck:  vehicles.filter(v => v.cat === 'truck').length,
+    sedan:  vehicles.filter(v => v.cat === 'sedan').length,
+    ev:     vehicles.filter(v => v.ev).length,
+    fast:   vehicles.filter(v => v.fast).length,
+  };
+}
+
+function renderChips() {
+  const c = getCounts();
+  const chips = [
+    { f:'all',   label:`All Vehicles (${c.all})` },
+    { f:'suv',   label:`SUVs (${c.suv})` },
+    { f:'truck', label:`Trucks (${c.truck})` },
+    { f:'sedan', label:`Sedans (${c.sedan})` },
+    { f:'ev',    label:`EVs (${c.ev})` },
+    { f:'fast',  label:`Fast Turn <21d (${c.fast})` },
+  ];
+  document.getElementById('buy-filters').innerHTML = chips.map(ch =>
+    `<div class="chip${buyFilter===ch.f?' active':''}" data-f="${ch.f}">${ch.label}</div>`
+  ).join('');
+  document.querySelectorAll('#buy-filters .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      buyFilter = chip.dataset.f;
+      currentPage = 1;
+      activeVehicle = null;
+      renderChips();
+      renderBuy();
+    });
+  });
+}
+
+function renderBuy() {
+  const filtered = getFiltered();
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageVehicles = filtered.slice(start, start + PAGE_SIZE);
+  const tagClass = t => t==='green'?'pill-green':t==='blue'?'pill-blue':t==='amber'?'pill-amber':'pill-gray';
+
+  const cardsHtml = pageVehicles.map((v, i) => {
+    const m = margin(v);
+    const mr = marginRange(v);
+    const isTop = v.id === filtered[0].id && currentPage === 1;
+    const sel = activeVehicle === v.id;
+    const pulse = getPulse(v);
+    const demand = pulse ? demandLabel(pulse.demandScore) : null;
+    const competition = pulse ? competitionLabel(pulse.supplyLevel, pulse.supplyCount) : null;
+
+    const daysClass = v.daysListed <= 3 ? 'days-fresh' : v.daysListed <= 10 ? 'days-mid' : 'days-old';
+    const daysText = v.daysListed === 1 ? 'Listed today' : `Listed ${v.daysListed} days ago`;
+    const lotCount = getLotCount(v.title);
+    const lotBadge = lotCount > 0
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#EDE9FE;color:#5B21B6;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid #C4B5FD;">
+          <i class="fa-solid fa-car-side" style="font-size:9px"></i> ${lotCount} on your lot · reduces match score
+        </span>`
+      : '';
+
+    // Match score tooltip content
+    const matchTooltip = v.matchSignals ? (() => {
+      const rows = v.matchSignals.map(sig => {
+        const icon = sig.impact==='up' ? '↑' : sig.impact==='down' ? '↓' : 'ℹ';
+        const col = sig.impact==='up' ? '#166534' : sig.impact==='down' ? '#991B1B' : '#1B3A6B';
+        return `<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #F3F4F6;">
+          <span style="font-size:12px;font-weight:700;color:${col};flex-shrink:0;width:14px;">${icon}</span>
+          <div style="flex:1;font-size:11.5px;color:#374151;">${sig.label}</div>
+          <span style="font-size:10.5px;font-weight:600;color:${col};white-space:nowrap;">${sig.weight}</span>
+        </div>`;
+      }).join('');
+      const penaltyNote = v.lotPenalty > 0
+        ? `<div style="margin-top:8px;background:#FEF2F2;border-radius:6px;padding:6px 10px;font-size:11.5px;color:#991B1B;">Without the ${v.lotPenalty}% lot penalty, this vehicle scores ${v.baseMatch}%</div>`
+        : '';
+      return `<div style="position:absolute;left:0;top:calc(100% + 6px);z-index:100;width:340px;background:#fff;border:1px solid #E2E4EA;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.15);padding:12px 14px;">
+        <div style="font-size:12px;font-weight:700;color:#1B3A6B;margin-bottom:8px;">How lot match is calculated</div>
+        ${rows}
+        ${penaltyNote}
+        <div style="font-size:10.5px;color:#6B7280;margin-top:8px;">Based on your last 6 months of sales, local buyer demand, and current inventory exposure</div>
+      </div>`;
+    })() : '';
+
+    const matchBadge = `
+      <div class="match-badge" style="position:relative;">
+        ${isTop?'<div class="top-label">Top pick</div>':''}
+        <div class="match-pct ${v.match>=80?'pct-high':v.match>=60?'pct-mid':''}" style="${v.match<60?'color:var(--red)':''}">${v.match}%</div>
+        <div class="match-lbl">lot match</div>
+        ${v.matchSignals ? `
+          <div class="match-info-btn" onclick="event.stopPropagation();this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'"
+               style="width:16px;height:16px;border-radius:50%;background:#E8EEF8;border:1px solid #B8C8E8;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:4px auto 0;">
+            <i class="fa-solid fa-info" style="font-size:8px;color:#1B3A6B;"></i>
+          </div>
+          <div style="display:none;">${matchTooltip}</div>` : ''}
+      </div>`;
+    const timingBadge = v.priceTiming === 'before-rise'
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid #86efac;">
+          <i class="fa-solid fa-bolt" style="font-size:9px"></i> Auction prices up — buy now while lower
+        </span>`
+      : '';
+    const locationRow = `
+      <div class="vehicle-location">
+        <span class="loc-item"><i class="fa-solid fa-location-dot"></i> ${v.location} · <strong>${v.miles} miles away</strong></span>
+        <span class="loc-item"><i class="fa-regular fa-clock"></i> <span class="${daysClass}">${daysText}</span></span>
+      </div>`;
+    const pulseStrip = pulse ? `
+      <div style="display:flex;gap:14px;margin-top:10px;padding-top:9px;border-top:1px solid var(--gray-border);flex-wrap:wrap;">
+        <span style="font-size:11px;display:flex;align-items:center;gap:5px;color:${demand.color}">
+          <i class="fa-solid ${demand.icon}" style="font-size:10px"></i>${demand.text}
+        </span>
+        <span style="color:var(--gray-border)">·</span>
+        <span style="font-size:11px;display:flex;align-items:center;gap:5px;color:${competition.color}">
+          <i class="fa-solid ${competition.icon}" style="font-size:10px"></i>${competition.text}
+        </span>
+      </div>` : '';
+
+    // Inline detail panel — only shown when this card is selected
+    const detailHtml = sel ? buildDetail(v, m, pulse, demand, competition) : '';
+
+    return `<div class="vehicle-card${isTop?' top-pick':''}${sel?' selected':''}" data-id="${v.id}" style="${sel?'flex-direction:column;overflow:visible;':''}">
+      ${!sel ? `
+        ${matchBadge}
+        ${getImg(v) ? `<img src="${getImg(v)}" class="car-thumb" alt="${v.title}" onerror="this.style.display='none'">` : ''}
+        <div class="vehicle-main" style="flex:1">
+          <div class="vehicle-title">${v.title}</div>
+          <div class="vehicle-meta">${v.meta}</div>
+          ${locationRow}
+          <div class="tags" style="flex-wrap:wrap;">
+            ${v.tags.map(t=>`<span class="pill ${tagClass(t.t)}">${t.l}</span>`).join('')}
+            ${v.priceDrop ? `<span class="price-drop-badge"><i class="fa-solid fa-arrow-down"></i> Seller dropped ask $${v.priceDrop.amount.toLocaleString()} · ${v.priceDrop.daysAgo === 1 ? 'yesterday' : v.priceDrop.daysAgo + ' days ago'}</span>` : ''}
+            ${lotBadge}
+          </div>
+          ${pulseStrip}
+        </div>
+        <div class="vehicle-numbers" style="position:relative">
+          <div class="bid-price">$${v.bid.toLocaleString()}</div>
+          <div class="est-retail">suggested sale price $${v.retail.toLocaleString()}</div>
+          <div class="margin-est${m<2500?' margin-warn':''}">~$${mr.lo.toLocaleString()}–$${mr.hi.toLocaleString()} projected gross</div>
+          <div style="font-size:10px;color:var(--text2);text-align:right;margin-top:1px;">after recon, transport & financing</div>
+        </div>
+      ` : `
+        <div style="display:flex;align-items:flex-start;gap:1rem;width:100%">
+          ${matchBadge}
+          <div class="vehicle-main" style="flex:1">
+            <div class="vehicle-title">${v.title}</div>
+            <div class="vehicle-meta">${v.meta}</div>
+            ${locationRow}
+            <div class="tags" style="flex-wrap:wrap;">
+              ${v.tags.map(t=>`<span class="pill ${tagClass(t.t)}">${t.l}</span>`).join('')}
+              ${v.priceDrop ? `<span class="price-drop-badge"><i class="fa-solid fa-arrow-down"></i> Seller dropped ask $${v.priceDrop.amount.toLocaleString()} · ${v.priceDrop.daysAgo === 1 ? 'yesterday' : v.priceDrop.daysAgo + ' days ago'}</span>` : ''}
+              ${lotBadge}
+            </div>
+          </div>
+          <div class="vehicle-numbers">
+            <div class="bid-price">$${v.bid.toLocaleString()}</div>
+            <div class="est-retail">suggested sale price $${v.retail.toLocaleString()}</div>
+            <div class="margin-est${m<2500?' margin-warn':''}">~$${mr.lo.toLocaleString()}–$${mr.hi.toLocaleString()} projected gross</div>
+            <div style="font-size:10px;color:var(--text2);text-align:right;margin-top:1px;">after recon, transport & financing</div>
+            <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+              <div style="display:inline-flex;align-items:center;gap:5px;background:var(--gray-bg);color:var(--text2);font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;cursor:pointer;border:1px solid var(--gray-border);">
+                Close <i class="fa-solid fa-chevron-up" style="font-size:10px"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        ${detailHtml}
+      `}
+    </div>`;
+  }).join('');
+
+  // Pagination controls
+  const paginationHtml = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--gray-border);flex-wrap:wrap;gap:10px;">
+      <div style="font-size:12px;color:var(--text2)">
+        Showing <strong>${start+1}–${Math.min(start+PAGE_SIZE, filtered.length)}</strong> of <strong>${filtered.length}</strong> vehicles
+        ${filtered.length > PAGE_SIZE ? `<span style="color:var(--text2)"> · scroll for more</span>` : ''}
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="changePage(-1)" ${currentPage===1?'disabled style="opacity:0.4;cursor:default"':''}>← Prev</button>
+        ${Array.from({length:totalPages},(_,i)=>`
+          <button onclick="goPage(${i+1})" style="width:30px;height:30px;border-radius:50%;border:1px solid ${currentPage===i+1?'var(--navy)':'var(--gray-border)'};background:${currentPage===i+1?'var(--navy)':'var(--white)'};color:${currentPage===i+1?'#fff':'var(--text)'};font-size:12px;cursor:pointer;font-family:inherit;">${i+1}</button>
+        `).join('')}
+        <button class="btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="changePage(1)" ${currentPage===totalPages?'disabled style="opacity:0.4;cursor:default"':''}>Next →</button>
+      </div>
+    </div>`;
+
+  document.getElementById('vehicle-list').innerHTML = (cardsHtml || '<div style="padding:2rem;text-align:center;color:var(--text2)">No vehicles match this filter.</div>') + paginationHtml;
+
+  document.querySelectorAll('#vehicle-list .vehicle-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return; // don't toggle on button clicks
+      const id = parseInt(card.dataset.id);
+      activeVehicle = activeVehicle === id ? null : id;
+      renderBuy();
+    });
+  });
+}
+
+function buildDetail(v, m, pulse, demand, competition) {
+  // RANGES — estimates shown as ranges, not false precision
+  const reconLo  = Math.round(v.recon * 0.80 / 50) * 50;
+  const reconHi  = Math.round(v.recon * 1.20 / 50) * 50;
+  const transLo  = 150, transHi = 250;
+  const estCarryingDays = parseInt(v.daysToTurn) || 20;
+  const dailyFin = Math.round(v.bid * 0.0005);
+  const carryLo  = dailyFin * Math.max(estCarryingDays - 5, 8);
+  const carryHi  = dailyFin * (estCarryingDays + 8);
+  const costsLo  = reconLo + transLo + carryLo;
+  const costsHi  = reconHi + transHi + carryHi;
+  const grossLo  = v.retail - v.bid - costsHi;
+  const grossHi  = v.retail - v.bid - costsLo;
+
+  // Max bid: work backwards from $2,500 target gross using mid costs
+  const midCosts = Math.round((costsLo + costsHi) / 2);
+  const maxBid = v.retail - midCosts - 2500;
+  const bidHeadroom = maxBid - v.bid;
+  const headroomColor = bidHeadroom > 1500 ? 'var(--green-txt)' : bidHeadroom > 500 ? 'var(--amber)' : 'var(--red)';
+  const headroomLabel = bidHeadroom > 1500 ? 'Good headroom' : bidHeadroom > 500 ? 'Tight — bid carefully' : 'Already above max — avoid';
+
+  const marketBox = pulse ? `
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:140px;background:${demand.color==='var(--green)'?'var(--green-lt)':demand.color==='var(--amber)'?'var(--amber-lt)':'var(--red-lt)'};border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+        <i class="fa-solid ${demand.icon}" style="font-size:18px;color:${demand.color};flex-shrink:0"></i>
+        <div style="flex:1">
+          <div style="font-size:12.5px;font-weight:600;color:${demand.color}">${demand.text}</div>
+          <div style="font-size:11px;color:var(--text2)">Local buyer search activity</div>
+          <div style="margin-top:5px;">
+            <span onclick="event.stopPropagation();switchTab('pulse',document.querySelectorAll('.tab')[2]);setTimeout(()=>{activeSeg='${v.cat}';renderSegs();},100)"
+              style="font-size:11px;color:var(--navy);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px;">
+              See ${v.cat} market detail in Market Intelligence →
+            </span>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:140px;background:${competition.color==='var(--green)'?'var(--green-lt)':competition.color==='var(--amber)'?'var(--amber-lt)':'var(--red-lt)'};border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+        <i class="fa-solid ${competition.icon}" style="font-size:18px;color:${competition.color};flex-shrink:0"></i>
+        <div>
+          <div style="font-size:12.5px;font-weight:600;color:${competition.color}">${competition.text}</div>
+          <div style="font-size:11px;color:var(--text2)">Similar vehicles within 50 miles</div>
+        </div>
+      </div>
+    </div>` : '';
+
+  return `
+    <div style="margin-top:0;padding-top:14px;border-top:2px solid var(--navy);width:100%;">
+
+      ${getLotCount(v.title) > 0 ? `
+        <div style="background:#EDE9FE;border:1px solid #C4B5FD;border-radius:8px;padding:8px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+          <i class="fa-solid fa-car-side" style="color:#5B21B6;font-size:16px;flex-shrink:0"></i>
+          <div>
+            <span style="font-size:13px;font-weight:600;color:#5B21B6;">You already have ${getLotCount(v.title)} ${getLotCount(v.title)===1?'unit':'units'} like this on your lot</span>
+            <span style="font-size:12px;color:#6D28D9;margin-left:6px">— consider your segment exposure before buying another</span>
+          </div>
+        </div>` : ''}
+
+      ${v.priceDrop ? `
+        <div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:8px;padding:9px 14px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px;">
+          <i class="fa-solid fa-circle-info" style="color:#92400E;font-size:14px;flex-shrink:0;margin-top:1px"></i>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#92400E;margin-bottom:3px;">Seller dropped ask $${v.priceDrop.amount.toLocaleString()} ${v.priceDrop.daysAgo===1?'yesterday':v.priceDrop.daysAgo+' days ago'} — into a rising market</div>
+            <div style="font-size:12px;color:#78350F;line-height:1.5">${v.priceTiming === 'before-rise' ? 'Wholesale auction prices for this segment are up this month — meaning competitors are paying more than you would at this ask price. The seller is discounting while the market moves the other way. This is a favorable buying window.' : 'The seller is motivated to move this vehicle. Reduced ask improves your margin headroom.'}</div>
+          </div>
+        </div>` : ''}
+
+      ${v.priceTiming === 'before-rise' && !v.priceDrop ? `
+        <div style="background:#DCFCE7;border:1px solid #86EFAC;border-radius:8px;padding:9px 14px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px;">
+          <i class="fa-solid fa-bolt" style="color:#166534;font-size:14px;flex-shrink:0;margin-top:1px"></i>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#166534;margin-bottom:3px;">Auction prices rising — buy before this segment gets more expensive</div>
+            <div style="font-size:12px;color:#166534;line-height:1.5">Wholesale prices for this segment are up this month. Dealers buying now are paying less than those who wait. Act before the market moves further.</div>
+          </div>
+        </div>` : ''}
+
+      <!-- HERO: MAX BID — the real decision at auction -->
+      <div style="background:var(--navy);border-radius:12px;padding:18px 20px;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:600;color:#7A9BC0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">LotIQ bid guidance</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:end;margin-bottom:14px;">
+          <div>
+            <div style="font-size:11px;color:#7A9BC0;margin-bottom:4px;">Current auction price</div>
+            <div style="font-size:28px;font-weight:700;color:#fff;">$${v.bid.toLocaleString()}</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:#7A9BC0;margin-bottom:4px;">Max recommended bid</div>
+            <div style="font-size:36px;font-weight:800;color:#4ADE80;">$${maxBid.toLocaleString()}</div>
+            <div style="font-size:11px;color:#86EFAC;margin-top:3px;">Preserves your $2,500 target gross</div>
+            <div style="font-size:12px;font-weight:600;color:${headroomColor};margin-top:5px;background:rgba(255,255,255,0.08);border-radius:6px;padding:4px 8px;display:inline-block;">
+              ${bidHeadroom > 0 ? '+$' + bidHeadroom.toLocaleString() + ' headroom · ' + headroomLabel : headroomLabel}
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:#7A9BC0;margin-bottom:4px;">Suggested retail</div>
+            <div style="font-size:28px;font-weight:700;color:#fff;">$${v.retail.toLocaleString()}</div>
+          </div>
+        </div>
+        <!-- Profit breakdown — ranges, not false precision -->
+        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:10px 14px;">
+          <div style="font-size:11px;font-weight:600;color:#7A9BC0;margin-bottom:8px;">Projected gross at current bid</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center;font-size:11px;">
+            <div>
+              <div style="color:#4ADE80;font-weight:600;">$${v.retail.toLocaleString()}</div>
+              <div style="color:#7A9BC0;margin-top:2px;">Retail</div>
+            </div>
+            <div style="color:#7A9BC0;font-size:18px;padding-top:2px;">−</div>
+            <div>
+              <div style="color:#FCA5A5;">$${v.bid.toLocaleString()}</div>
+              <div style="color:#7A9BC0;margin-top:2px;">Acquisition</div>
+            </div>
+            <div style="color:#7A9BC0;font-size:18px;padding-top:2px;">−</div>
+            <div>
+              <div style="color:#FCA5A5;">~$${costsLo.toLocaleString()}–$${costsHi.toLocaleString()}</div>
+              <div style="color:#7A9BC0;margin-top:2px;">Recon+fees+financing</div>
+            </div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
+            <div style="font-size:11px;color:#7A9BC0;">= Projected gross range <span style="font-size:10px;">(recon ~$${reconLo.toLocaleString()}–$${reconHi.toLocaleString()} · transport ~$${transLo}–$${transHi} · est. ~${estCarryingDays}d financing)</span></div>
+            <div style="font-size:20px;font-weight:700;color:${grossLo>=2000?'#4ADE80':'#FCD34D'};">~$${grossLo.toLocaleString()}–$${grossHi.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE 2: MARKET SIGNALS -->
+      ${marketBox}
+
+      <!-- ZONE 3: WHY LOTIQ + VEHICLE DETAILS -->
+      <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Why LotIQ recommends this</div>
+          ${v.reasons.map(r=>`
+            <div style="display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:0.5px solid var(--gray-border);">
+              <i class="fa-solid ${r.p?'fa-check':'fa-triangle-exclamation'}" style="font-size:11px;color:${r.p?'var(--green)':'var(--amber)'};margin-top:2px;flex-shrink:0"></i>
+              <span style="font-size:12px;color:var(--text2);line-height:1.4">${r.t}</span>
+            </div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Vehicle details</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
+              <span style="color:var(--text2)">Recon cost est.</span>
+              <span style="font-weight:600;color:var(--amber)">~$${reconLo.toLocaleString()}–$${reconHi.toLocaleString()}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
+              <span style="color:var(--text2)">Transport / auction fees</span>
+              <span style="font-weight:600;color:var(--text)">~$${transLo}–$${transHi}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
+              <span style="color:var(--text2)">Financing cost (~${estCarryingDays}d est.)</span>
+              <span style="font-weight:600;color:var(--text)">~$${carryLo.toLocaleString()}–$${carryHi.toLocaleString()}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
+              <span style="color:var(--text2)">Condition</span>
+              <span style="font-weight:600;color:var(--text)">${(()=>{const s=parseFloat(v.condScore);return s>=9.0?'Excellent':s>=8.5?'Very good':s>=8.0?'Good':s>=7.0?'Fair':'Below average'})()}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
+              <span style="color:var(--text2)">Financing approved</span>
+              <span style="font-weight:600;color:var(--green)">Yes</span>
+            </div>
+            <div style="height:0.5px;background:var(--gray-border)"></div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+              <span style="color:var(--text2)">VIN</span>
+              <span class="vin-code" style="font-size:10px;">${v.vin}</span>
+              <button class="copy-btn" onclick="event.stopPropagation();var vin=this.previousElementSibling.textContent;navigator.clipboard.writeText(vin).then(()=>{this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button>
+            </div>
+            <div style="font-size:12px;">
+              <a href="https://www.carfax.com/vehicle/${v.vin}" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue-txt);font-weight:500;text-decoration:none;display:flex;align-items:center;gap:4px;">
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px"></i> View Carfax Report
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE 4: ACTIONS -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--gray-border);">
+        <button class="btn-buy" onclick="event.stopPropagation();alert('In the live product, this places a bid on OPENLANE up to your max bid of $${maxBid.toLocaleString()}. LotIQ monitors the auction and bids automatically up to that threshold.')"><i class="fa-solid fa-gavel"></i> Bid up to $${maxBid.toLocaleString()}</button>
+        <button class="btn-primary" onclick="event.stopPropagation();this.innerHTML='<i class=\'fa-solid fa-check\'></i> Added';this.style.background='var(--green)';setTimeout(()=>{this.innerHTML='<i class=\'fa-regular fa-bookmark\'></i> Watchlist';this.style.background='';},2000)"><i class="fa-regular fa-bookmark"></i> Watchlist</button>
+        <button class="btn-secondary" onclick="event.stopPropagation();alert('In the live product, this shows comparable vehicles on OPENLANE.')">Comparables</button>
+        <button class="btn-secondary" onclick="event.stopPropagation();openAlertModal()" style="display:flex;align-items:center;gap:5px;"><i class="fa-regular fa-bell" style="font-size:11px"></i> Alert similar</button>
+      </div>
+
+    </div>`;
+}
+
+function changePage(dir) {
+  const filtered = getFiltered();
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  currentPage = Math.max(1, Math.min(totalPages, currentPage + dir));
+  activeVehicle = null;
+  renderBuy();
+}
+
+function goPage(p) {
+  currentPage = p;
+  activeVehicle = null;
+  renderBuy();
+}
+
+document.getElementById('buy-filters').addEventListener('click', e => {
+  // handled inside renderChips now
+});
+
+/* ══ LOT TAB ══ */
+function renderErosion() {
+  const aging = inventory.filter(v => v.status === 'warn' || v.status === 'danger');
+  const dc = v => Math.round(v.bought * 0.0005);
+  const breakEven = v => {
+    if (v.margin <= 0) return 'Past break-even';
+    const daysLeft = Math.ceil(v.margin / dc(v));
+    return `${daysLeft} days left`;
+  };
+  const futureMargin = (v, extraDays) => v.margin - dc(v) * extraDays;
+
+  document.getElementById('erosion-cards').innerHTML = aging.slice(0,6).map(v => {
+    const m7  = futureMargin(v, 7);
+    const m14 = futureMargin(v, 14);
+    const m30 = futureMargin(v, 30);
+    const isUrgent = v.margin < dc(v) * 10;
+
+    return `<div style="background:var(--white);border:1px solid var(--gray-border);border-left:3px solid ${isUrgent?'var(--red)':'var(--gray-border)'};border-radius:8px;padding:10px 12px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">${v.name.split(' ').slice(0,3).join(' ')}</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">${v.days}d on lot · $${dc(v)}/day</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;">
+        <div style="text-align:center;background:var(--gray-bg);border-radius:5px;padding:4px;">
+          <div style="font-size:10px;color:var(--text2);">+7d</div>
+          <div style="font-size:13px;font-weight:600;color:${m7<0?'var(--red)':'var(--text)'};">${m7>=0?'+':''}$${m7.toLocaleString()}</div>
+        </div>
+        <div style="text-align:center;background:var(--gray-bg);border-radius:5px;padding:4px;">
+          <div style="font-size:10px;color:var(--text2);">+14d</div>
+          <div style="font-size:13px;font-weight:600;color:${m14<0?'var(--red)':'var(--text)'};">${m14>=0?'+':''}$${m14.toLocaleString()}</div>
+        </div>
+        <div style="text-align:center;background:var(--gray-bg);border-radius:5px;padding:4px;">
+          <div style="font-size:10px;color:var(--text2);">+30d</div>
+          <div style="font-size:13px;font-weight:600;color:${m30<0?'var(--red)':'var(--text)'};">${m30>=0?'+':''}$${m30.toLocaleString()}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:${isUrgent?'var(--red)':'var(--text2)'};">
+        <i class="fa-regular fa-clock" style="font-size:10px;margin-right:3px"></i>${breakEven(v)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let actionsOpen = false;
+function toggleActions() {
+  actionsOpen = !actionsOpen;
+  const list = document.getElementById('action-list');
+  const label = document.getElementById('action-toggle-label');
+  const icon = document.getElementById('action-toggle-icon');
+  list.style.display = actionsOpen ? 'flex' : 'none';
+  label.textContent = actionsOpen ? 'Hide' : 'Show';
+  icon.style.transform = actionsOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+function renderActions() {
+  const dc = v => Math.round(v.bought * 0.0005);
+  const tc = v => dc(v) * v.days;
+  const drop = v => v.status==='danger' ? Math.round((v.days-30)*18/100)*100 : 500;
+
+  const actions = [];
+
+  // ── GOOD NEWS ACTIONS (always first) ──
+
+  // Fast turn celebration + nuanced truck guidance
+  actions.push({
+    type: 'good', icon: '★',
+    title: 'Silverado sold in 11 days — trucks are your fastest segment',
+    sub: 'Truck market is hot in Cedar Rapids · move your 2 F-150s with a small price drop first, then restock with fresh inventory at better margin',
+    btnLabel: 'View trucks',
+    btnAction: `switchTab('buy',document.querySelectorAll('.tab')[1]);buyFilter='truck';renderChips();renderBuy();`
+  });
+
+  // Price increase opportunities — on-track vehicles priced below market
+  const priceUpCandidates = [
+    {name:'Ford F-150 XLT', gain: 400},
+    {name:'Toyota RAV4 XLE', gain: 250},
+  ];
+  priceUpCandidates.forEach(c => {
+    actions.push({
+      type: 'good', icon: '↑',
+      title: `Raise price on ${c.name} by $${c.gain} — you're below market`,
+      sub: `OPENLANE auction data shows comparable units selling $${c.gain} above your current list price · low competition nearby`,
+      btnLabel: 'Raise price',
+      btnAction: `alert('In the live product, this updates your list price and pushes to all listings.')`
+    });
+  });
+
+  // Segment opportunity
+  actions.push({
+    type: 'good', icon: '↑',
+    title: 'EV demand up 34% — only 1 EV on lot, low local supply',
+    sub: 'Cost:Market ratio on EVs is 84% · pricing window before off-lease surge arrives · 19 EV listings within 50 miles',
+    btnLabel: 'View EVs',
+    btnAction: `switchTab('buy',document.querySelectorAll('.tab')[0]);buyFilter='ev';renderChips();renderBuy();`
+  });
+
+  // ── BAD NEWS ACTIONS — danger vehicles first, then warn, then on-track near expiry ──
+  const danger = inventory.filter(v => v.status === 'danger').sort((a,b) => b.days - a.days);
+  const warn   = inventory.filter(v => v.status === 'warn').sort((a,b) => b.days - a.days);
+  const ok     = inventory.filter(v => v.status === 'ok').sort((a,b) => b.days - a.days);
+
+  danger.forEach(v => {
+    const carrying = tc(v);
+    const daysLeft = v.margin > 0 ? Math.ceil(v.margin / dc(v)) : 0;
+    const breakEvenText = daysLeft > 0 ? 'break-even in ' + daysLeft + ' days' : 'past break-even — losing money';
+    actions.push({
+      type: 'danger',
+      title: 'Drop price on ' + v.name.split('·')[0].trim() + ' — ' + v.days + ' days on lot',
+      sub: '$' + dc(v) + '/day daily financing cost · $' + carrying.toLocaleString() + ' spent so far · ' + breakEvenText,
+      btnLabel: 'Drop -$' + drop(v).toLocaleString(),
+      btnAction: "alert('In the live product, this drops the price and pushes to all listings immediately.')"
+    });
+  });
+
+  warn.forEach(v => {
+    const carrying = tc(v);
+    actions.push({
+      type: 'warn',
+      title: 'Review pricing on ' + v.name.split('·')[0].trim() + ' — ' + v.days + ' days on lot',
+      sub: '$' + dc(v) + '/day daily financing cost · $' + carrying.toLocaleString() + ' spent so far · approaching break-even',
+      btnLabel: 'Review -$' + drop(v).toLocaleString(),
+      btnAction: "alert('In the live product, this opens a pricing review for this vehicle.')"
+    });
+  });
+
+  ok.forEach(v => {
+    actions.push({
+      type: 'ok',
+      title: v.name.split('·')[0].trim() + ' — ' + v.days + ' days on lot',
+      sub: '$' + dc(v) + '/day daily financing cost · $' + tc(v).toLocaleString() + ' spent · on track',
+      btnLabel: 'On track ✓',
+      btnAction: null
+    });
+  });
+
+  document.getElementById('action-summary').textContent = actions.length + ' actions today';
+
+  const borderCol = function(t) { return t==='good'?'var(--green)':t==='danger'?'var(--red)':t==='warn'?'var(--amber)':'var(--gray-border)'; };
+  const iconCol   = function(t) { return t==='good'?'var(--green-txt)':t==='danger'?'var(--red)':t==='warn'?'var(--amber)':'var(--text2)'; };
+  const btnStyle  = function(t) { return t==='danger' ? 'background:var(--navy);color:#fff;border:none;' : 'background:var(--white);color:var(--text);border:1px solid var(--gray-border);'; };
+
+  function makeActionRow(a, i) {
+    return '<div style="background:var(--white);border:1px solid var(--gray-border);border-left:3px solid ' + borderCol(a.type) + ';border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:12px;">'
+      + '<span style="font-size:12px;font-weight:700;color:' + iconCol(a.type) + ';width:16px;flex-shrink:0;text-align:center;">' + (a.icon||'') + '</span>'
+      + '<div style="flex:1;min-width:0;">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + a.title + '</div>'
+        + '<div style="font-size:11.5px;color:var(--text2);margin-top:2px;">' + a.sub + '</div>'
+      + '</div>'
+      + '<button data-action-idx="' + i + '" ' + (!a.btnAction ? 'disabled' : '') + ' style="' + btnStyle(a.type) + 'border-radius:8px;padding:5px 12px;font-size:11.5px;font-weight:500;cursor:' + (a.btnAction?'pointer':'default') + ';white-space:nowrap;font-family:inherit;opacity:' + (a.btnAction?1:0.5) + ';">' + a.btnLabel + '</button>'
+      + '</div>';
+  }
+
+  // Always show first 3, rest behind "Show more"
+  const preview = actions.slice(0, 3);
+  const rest = actions.slice(3);
+
+  let html = preview.map(makeActionRow).join('');
+  if (rest.length > 0) {
+    html += '<div id="action-rest" style="display:none;flex-direction:column;gap:6px;">' + rest.map(makeActionRow).join('') + '</div>';
+    html += '<button onclick="toggleActionRest()" id="action-more-btn" style="background:var(--white);border:1px solid var(--gray-border);border-radius:8px;padding:7px 16px;font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;margin-top:2px;">Show ' + rest.length + ' more actions ↓</button>';
+  }
+
+  const list = document.getElementById('action-list');
+  list.innerHTML = html;
+  list.style.display = 'flex';
+  list.style.flexDirection = 'column';
+  list.style.gap = '6px';
+
+  document.querySelectorAll('#action-list [data-action-idx]').forEach(function(btn) {
+    const idx = parseInt(btn.dataset.actionIdx);
+    const a = actions[idx];
+    if (a && a.btnAction) {
+      btn.addEventListener('click', function() {
+        try { eval(a.btnAction); } catch(e) { console.error(e); }
+      });
+    }
+  });
+}
+
+function toggleActionRest() {
+  const rest = document.getElementById('action-rest');
+  const btn = document.getElementById('action-more-btn');
+  const open = rest.style.display === 'flex';
+  rest.style.display = open ? 'none' : 'flex';
+  rest.style.flexDirection = 'column';
+  rest.style.gap = '6px';
+  btn.textContent = open ? 'Show ' + rest.querySelectorAll('[data-action-idx]').length + ' more actions ↓' : 'Show fewer ↑';
+}
+
+function renderCategories() {
+  const max = Math.max(...categories.map(c => c.count));
+  document.getElementById('cat-list').innerHTML = categories.map(c => {
+    const w = Math.round(c.count / max * 100);
+    const col = c.avgDays > 28 ? 'var(--amber)' : 'var(--green)';
+    return '<div class="cat-row">'
+      + '<span class="cat-label">' + c.label + '</span>'
+      + '<div class="cat-bar-track"><div class="cat-bar-fill" style="width:' + w + '%;background:' + c.color + '"></div></div>'
+      + '<span class="cat-count">' + c.count + '</span>'
+      + '<span class="cat-days" style="color:' + col + '">' + c.avgDays + 'd</span>'
+      + '</div>';
+  }).join('');
+}
+
+let selectedVehicles = new Set();
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  const cnt = document.getElementById('bulk-count');
+  if (selectedVehicles.size > 0) {
+    bar.style.display = 'flex';
+    cnt.textContent = `${selectedVehicles.size} vehicle${selectedVehicles.size>1?'s':''} selected`;
+  } else {
+    bar.style.display = 'none';
+  }
+  const allChk = document.getElementById('select-all-chk');
+  if (allChk) {
+    const filtered = inventory.filter(v => lotFilter === 'all' || v.status === lotFilter);
+    allChk.checked = filtered.length > 0 && filtered.every(v => selectedVehicles.has(v.id));
+    allChk.indeterminate = selectedVehicles.size > 0 && !allChk.checked;
+  }
+}
+
+function toggleSelectAll(checked) {
+  const filtered = inventory.filter(v => lotFilter === 'all' || v.status === lotFilter);
+  if (checked) filtered.forEach(v => selectedVehicles.add(v.id));
+  else selectedVehicles.clear();
+  renderAging();
+  updateBulkBar();
+}
+
+function toggleVehicle(id) {
+  if (selectedVehicles.has(id)) selectedVehicles.delete(id);
+  else selectedVehicles.add(id);
+  updateBulkBar();
+  renderAging();
+}
+
+function clearSelection() {
+  selectedVehicles.clear();
+  renderAging();
+  updateBulkBar();
+}
+
+function bulkDrop() {
+  const names = inventory.filter(v => selectedVehicles.has(v.id)).map(v => v.name.split(' ').slice(0,3).join(' ')).join(', ');
+  alert(`In the live product, LotIQ would push optimized price drops for: ${names} — all updated across your listings simultaneously.`);
+  clearSelection();
+}
+
+function renderAging() {
+  const filtered = inventory.filter(v => lotFilter === 'all' || v.status === lotFilter);
+  const pillCls = s => s==='ok'?'pill-green':s==='warn'?'pill-amber':'pill-red';
+  const dc = v => Math.round(v.bought * 0.0005);
+  const tc = v => dc(v) * v.days;
+  const drop = v => v.status==='danger'?Math.round((v.days-30)*18/100)*100:v.status==='warn'?500:0;
+  const gridStyle = 'grid-template-columns:36px 2fr 0.7fr 0.8fr 0.8fr 0.8fr 0.8fr 1.2fr;';
+
+  document.getElementById('aging-list').innerHTML = filtered.map(v => {
+    const d = drop(v);
+    const carrying = tc(v);
+    const isSelected = selectedVehicles.has(v.id);
+    const carryColor = carrying > 500 ? 'color:var(--red);font-weight:600' : carrying > 200 ? 'color:var(--amber);font-weight:600' : 'color:var(--text2)';
+
+    const actionCell = v.status === 'ok'
+      ? '<span style="font-size:11px;color:var(--green-txt);font-weight:500;">&#10003; On track</span>'
+      : '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">'
+          + '<button class="act-btn' + (v.status==='danger'?' act-urgent':' act-warn') + '" data-status="' + v.status + '" data-drop="' + d + '" data-name="' + v.name.replace(/"/g,'') + '">'
+            + (v.status==='danger' ? 'Drop -$' + d.toLocaleString() : 'Review -$' + d.toLocaleString())
+          + '</button>'
+          + '<span onclick="event.stopPropagation();switchTab(\'pulse\',document.querySelectorAll(\'.tab\')[2]);setTimeout(()=>{activeSeg=\'' + (v.sub.toLowerCase().includes('suv')||v.sub.toLowerCase().includes('jeep')||v.sub.toLowerCase().includes('explorer')||v.sub.toLowerCase().includes('cherokee')?'suv':v.sub.toLowerCase().includes('truck')||v.sub.toLowerCase().includes('silverado')||v.sub.toLowerCase().includes('f-150')||v.sub.toLowerCase().includes('sierra')?'truck':v.sub.toLowerCase().includes('minivan')||v.sub.toLowerCase().includes('sienna')||v.sub.toLowerCase().includes('pacifica')||v.sub.toLowerCase().includes('odyssey')?'minivan':'sedan') + '\';renderSegs();},100)" style="font-size:10.5px;color:var(--navy);font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:2px;white-space:nowrap;">See market context →</span>'
+        + '</div>';
+
+    return '<div class="aging-row" style="' + gridStyle + 'background:' + (isSelected?'#EEF2FF':'') + ';">'
+      + '<div style="display:flex;align-items:center;"><input type="checkbox" ' + (isSelected?'checked':'') + ' style="width:15px;height:15px;cursor:pointer;" onchange="toggleVehicle(' + v.id + ')"></div>'
+      + '<div><div class="veh-name">' + v.name + '</div><div class="veh-sub">' + v.sub + '</div></div>'
+      + '<div class="r"><span class="pill ' + pillCls(v.status) + '">' + v.days + 'd</span></div>'
+      + '<div class="r" style="font-size:12px;color:var(--text2);">$' + v.bought.toLocaleString() + '</div>'
+      + '<div class="r" style="font-size:12.5px;font-weight:500;">$' + v.list.toLocaleString() + '</div>'
+      + '<div class="r" style="font-size:12px;color:var(--amber);">$' + dc(v) + '/d</div>'
+      + '<div class="r" style="font-size:12.5px;' + carryColor + '">$' + carrying.toLocaleString() + '</div>'
+      + '<div class="r">' + actionCell + '</div>'
+      + '</div>';
+  }).join('') || '<div style="padding:1.5rem;text-align:center;color:var(--text2)">No vehicles in this category.</div>';
+
+  document.querySelectorAll('#aging-list .act-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const s = btn.dataset.status, d = btn.dataset.drop, n = btn.dataset.name;
+      alert(`LotIQ recommends dropping the price of your ${n} by $${parseInt(d).toLocaleString()}. In the live product, this pushes the updated price to your listings immediately.`);
+    });
+  });
+
+  updateBulkBar();
+}
+
+document.getElementById('lot-filters').addEventListener('click', e => {
+  const chip = e.target.closest('.chip'); if (!chip) return;
+  lotFilter = chip.dataset.f;
+  selectedVehicles.clear();
+  document.querySelectorAll('#lot-filters .chip').forEach(c => c.classList.toggle('active', c === chip));
+  renderAging();
+});
+
+/* ══ PULSE TAB ══ */
+function renderSegs() {
+  const q = segSearch.toLowerCase();
+  const filtered = segments.filter(function(s) {
+    return s.name.toLowerCase().includes(q) || s.sub.toLowerCase().includes(q);
+  });
+
+  const supplyPill = function(level, count) {
+    const cls = level==='low'?'pill-green':level==='med'?'pill-amber':'pill-red';
+    const lbl = level==='low'?'Low':level==='med'?'Moderate':'High';
+    return '<span class="pill ' + cls + '">' + count + ' · ' + lbl + '</span>';
+  };
+
+  const signalBadge = function(signal) {
+    const map = {
+      'Strong market':'opp-buy',
+      'Growing window':'opp-buy',
+      'Competitive':'opp-hold',
+      'Price sharp':'opp-hold',
+      'Patient buyers':'opp-avoid'
+    };
+    const cls = map[signal] || 'opp-hold';
+    return '<span class="opp-badge ' + cls + '">' + signal + '</span>';
+  };
+
+  const barHtml = function(bars) {
+    const mx = Math.max.apply(null, bars);
+    return '<div class="mini-bars">' + bars.map(function(b,i) {
+      const h = Math.max(3, Math.round(b/mx*28));
+      const bg = i===bars.length-1 ? '#1B3A6B' : '#B8C8E8';
+      return '<div class="mini-bar" style="height:' + h + 'px;background:' + bg + '"></div>';
+    }).join('') + '</div>';
+  };
+
+  let html = '';
+  filtered.forEach(function(s) {
+    const isOpen = activeSeg === s.id;
+    const isDown = s.wholesaleTrend.startsWith('-');
+    const wsCol = isDown ? 'var(--green-txt)' : 'var(--red)';
+    const wsLabel = isDown ? '↓ falling — good time to buy' : '↑ rising — consider waiting';
+    const daysCol = s.estDays>30 ? 'var(--red)' : s.estDays>22 ? 'var(--amber)' : 'var(--green-txt)';
+    const lotUnits = s.yourLotUnits;
+    const lotCoverage = lotUnits * s.mktAbsorptionDays;
+    const lotCol = lotUnits===0 ? 'var(--amber)' : lotCoverage>60 ? 'var(--red)' : 'var(--text2)';
+    const demandCol = s.demandScore>70 ? 'var(--green-txt)' : s.demandScore>50 ? 'var(--amber)' : 'var(--red)';
+    const demandDirCol = s.demandDir==='up' ? 'var(--green-txt)' : 'var(--red)';
+
+    // Main row
+    html += '<tr data-id="' + s.id + '" class="' + (isOpen?'active-row':'') + '" style="cursor:pointer;">'
+      + '<td>'
+        + '<div class="seg-name">' + s.name + '</div>'
+        + '<div class="seg-sub">' + s.sub + '</div>'
+        + '<div style="font-size:12px;font-weight:600;color:' + lotCol + ';margin-top:3px">' + lotUnits + ' on your lot</div>'
+        + '<div style="font-size:10px;color:var(--text2)">' + lotCoverage + ' days of inventory covered</div>'
+      + '</td>'
+      + '<td>'
+        + (function() {
+            var temp, tempCol, tempSub;
+            if (s.demandScore >= 80 && s.supplyLevel === 'low') {
+              temp = 'Hot'; tempCol = 'var(--green-txt)';
+              tempSub = 'Many buyers, few competitors';
+            } else if (s.demandScore >= 70 && s.supplyLevel !== 'high') {
+              temp = 'Active'; tempCol = 'var(--green-txt)';
+              tempSub = 'Good demand, manageable competition';
+            } else if (s.demandScore >= 60 && s.supplyLevel === 'high') {
+              temp = 'Crowded'; tempCol = 'var(--amber)';
+              tempSub = 'Buyers exist but so do many competitors';
+            } else if (s.demandScore >= 50) {
+              temp = 'Moderate'; tempCol = 'var(--amber)';
+              tempSub = 'Some buyers, price carefully';
+            } else {
+              temp = 'Slow'; tempCol = 'var(--red)';
+              tempSub = 'Few buyers, long sell times';
+            }
+            return '<div style="font-size:14px;font-weight:700;color:' + tempCol + ';">' + temp + '</div>'
+              + '<div style="font-size:11px;color:var(--text2);margin-top:2px;">' + tempSub + '</div>';
+          })()
+      + '</td>'
+      + '<td>' + supplyPill(s.supplyLevel, s.supplyCount) + '<div style="font-size:10px;color:var(--text2);margin-top:3px">' + s.supplyTrend + '</div></td>'
+      + '<td>'
+        + '<div style="font-size:14px;font-weight:700;color:' + wsCol + ';">' + (s.wholesaleLabel || (isDown ? 'Falling' : 'Rising')) + ' ' + (isDown ? '↓' : '↑') + '</div>'
+        + '<div style="font-size:11px;color:var(--text2);margin-top:2px;">' + s.wholesaleTrend + ' this month</div>'
+      + '</td>'
+      + '<td class="r" style="font-weight:600;color:' + daysCol + ';">' + s.estDays + 'd</td>'
+      + '<td class="r">' + signalBadge(s.buySignal) + '</td>'
+    + '</tr>';
+
+    // Inline expanded detail row
+    if (isOpen) {
+      const months = ['Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const mx = Math.max.apply(null, s.bars);
+
+      const trendBars = s.bars.map(function(b,i) {
+        const h = Math.max(4, Math.round(b/mx*44));
+        const bg = i===s.bars.length-1 ? '#1B3A6B' : '#B8C8E8';
+        return '<div style="flex:1;height:' + h + 'px;background:' + bg + ';border-radius:3px 3px 0 0;"></div>';
+      }).join('');
+
+      const trendMonths = months.map(function(m) {
+        return '<div style="flex:1;font-size:9px;color:var(--text2);text-align:center;">' + m + '</div>';
+      }).join('');
+
+      const nearbyRows = s.nearby.map(function(n) {
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--gray-bg);border-radius:8px;border:1px solid var(--gray-border);">'
+          + '<div><div style="font-size:12px;font-weight:500;">' + n.name + '</div><div style="font-size:11px;color:var(--text2);">' + n.dist + ' away</div></div>'
+          + '<div style="text-align:right"><div style="font-size:13px;font-weight:600;">$' + n.price.toLocaleString() + '</div><div style="font-size:11px;color:var(--text2);">' + n.days + 'd on market</div></div>'
+          + '</div>';
+      }).join('');
+
+      const signalBg = s.buySignal==='Strong market'||s.buySignal==='Growing window' ? 'var(--green-lt)' : s.buySignal==='Patient buyers' ? 'var(--red-lt)' : 'var(--amber-lt)';
+      const signalTxt = s.buySignal==='Strong market'||s.buySignal==='Growing window' ? 'var(--green-txt)' : s.buySignal==='Patient buyers' ? 'var(--red)' : 'var(--amber-txt)';
+
+      html += '<tr><td colspan="6" style="padding:0;">'
+        + '<div style="background:var(--blue-lt);border:1.5px solid #1B3A6B;border-radius:10px;padding:1.1rem 1.25rem;margin:4px 0 8px;">'
+
+          // 4 metrics
+          + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">'
+            + (function() {
+                var temp, tempCol;
+                if (s.demandScore >= 80 && s.supplyLevel === 'low') { temp = 'Hot'; tempCol = 'var(--green-txt)'; }
+                else if (s.demandScore >= 70 && s.supplyLevel !== 'high') { temp = 'Active'; tempCol = 'var(--green-txt)'; }
+                else if (s.demandScore >= 60 && s.supplyLevel === 'high') { temp = 'Crowded'; tempCol = 'var(--amber)'; }
+                else if (s.demandScore >= 50) { temp = 'Moderate'; tempCol = 'var(--amber)'; }
+                else { temp = 'Slow'; tempCol = 'var(--red)'; }
+                return '<div><div style="font-size:11px;color:var(--text2);margin-bottom:3px;">Market temperature</div>'
+                  + '<div style="font-size:18px;font-weight:700;color:' + tempCol + ';">' + temp + '</div>'
+                  + '<div style="font-size:10px;color:' + demandDirCol + ';">Buyer interest ' + s.demandTrend + ' vs last mo</div></div>';
+              })()
+            + '<div><div style="font-size:11px;color:var(--text2);margin-bottom:3px;">Competitors nearby</div><div style="font-size:18px;font-weight:700;color:' + (s.supplyLevel==='low'?'var(--green-txt)':s.supplyLevel==='med'?'var(--amber)':'var(--red)') + ';">' + s.supplyCount + ' listings</div><div style="font-size:10px;color:var(--text2);">within 50 miles · ' + s.supplyTrend + '</div></div>'
+            + '<div><div style="font-size:11px;color:var(--text2);margin-bottom:3px;">Auction prices</div><div style="font-size:18px;font-weight:700;color:' + wsCol + ';">' + (s.wholesaleLabel||'') + ' ' + (isDown?'↓':'↑') + '</div><div style="font-size:10px;color:var(--text2);">' + s.wholesaleTrend + ' this month across segment</div></div>'
+            + '<div><div style="font-size:11px;color:var(--text2);margin-bottom:3px;">Est. days to sell</div><div style="font-size:18px;font-weight:700;color:' + daysCol + ';">' + s.estDays + ' days</div><div style="font-size:10px;color:var(--text2);">your lot: ' + s.yourLotUnits + ' on lot</div></div>'
+          + '</div>'
+
+          // Auction price explanation note
+          + (s.wholesaleNote ? '<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:var(--text2);">'
+            + '<i class="fa-solid fa-circle-info" style="color:var(--blue-txt);margin-right:6px"></i>'
+            + '<strong style="color:var(--text);">About the ' + s.wholesaleTrend + ' price movement:</strong> ' + s.wholesaleNote
+            + '</div>' : '')
+
+          // Buyer interest trend chart
+          + '<div style="margin-bottom:12px;">'
+            + '<div style="font-size:11px;color:var(--text2);margin-bottom:6px;">How many people are searching for this vehicle type — Cedar Rapids area, last 7 months</div>'
+            + '<div style="display:flex;align-items:flex-end;gap:4px;height:48px;">' + trendBars + '</div>'
+            + '<div style="display:flex;gap:4px;margin-top:3px;">' + trendMonths + '</div>'
+          + '</div>'
+
+          // Nearby listings
+          + '<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:7px;">Nearby listings within 50 miles</div>'
+          + '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">' + nearbyRows + '</div>'
+
+          // Purchase timing — connects WHEN they bought to current market conditions
+          + (s.purchaseTiming ? (function() {
+              var pt = s.purchaseTiming;
+              var bg = pt.status==='advantage' ? 'var(--green-lt)' : pt.status==='watch' ? 'var(--amber-lt)' : 'var(--blue-lt)';
+              var col = pt.status==='advantage' ? 'var(--green-txt)' : pt.status==='watch' ? 'var(--amber-txt)' : 'var(--blue-txt)';
+              var icon = pt.status==='advantage' ? 'fa-bolt' : pt.status==='watch' ? 'fa-triangle-exclamation' : 'fa-circle-info';
+              var label = pt.status==='advantage' ? 'Your timing advantage' : 'Watch your existing inventory';
+              return '<div style="background:' + bg + ';border-radius:8px;padding:10px 14px;margin-bottom:10px;">'
+                + '<div style="font-size:11px;font-weight:700;color:' + col + ';margin-bottom:4px;display:flex;align-items:center;gap:6px;">'
+                + '<i class="fa-solid ' + icon + '"></i>' + label + '</div>'
+                + '<div style="font-size:12.5px;color:' + col + ';line-height:1.5">' + pt.detail + '</div>'
+                + '</div>';
+            })() : '')
+
+          // LotIQ insight
+          + '<div style="background:var(--white);border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:12.5px;color:var(--text2);"><i class="fa-solid fa-star" style="color:#185FA5;margin-right:6px"></i>' + s.insight + '</div>'
+
+          // Auction price note — explains percentage and variability
+          + (s.wholesaleNote ? '<div style="background:var(--gray-bg);border:1px solid var(--gray-border);border-radius:8px;padding:9px 14px;margin-bottom:10px;font-size:12px;color:var(--text2);">'
+            + '<i class="fa-solid fa-circle-info" style="color:var(--blue-txt);margin-right:6px"></i>'
+            + '<strong style="color:var(--text);">About the ' + s.wholesaleTrend + ' price change:</strong> ' + s.wholesaleNote
+            + '</div>' : '')
+
+          // Signal banner
+          + '<div style="background:' + signalBg + ';border-radius:8px;padding:9px 14px;margin-bottom:12px;font-size:12.5px;font-weight:500;color:' + signalTxt + ';">' + s.buySignal + ' — ' + s.buyReason + '</div>'
+
+          // Actions
+          + '<div style="display:flex;gap:8px;">'
+            + '<button class="btn-primary" data-seg-id="' + s.id + '" data-seg-name="' + s.name + '" id="seg-action-' + s.id + '" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">View on OPENLANE</button>'
+            + '<button class="btn-secondary seg-close-btn">Close ↑</button>'
+          + '</div>'
+
+        + '</div>'
+      + '</td></tr>';
+    }
+  });
+
+  document.getElementById('seg-body').innerHTML = html;
+
+  document.querySelectorAll('#seg-body tr[data-id]').forEach(function(row) {
+    row.addEventListener('click', function() {
+      const id = row.dataset.id;
+      activeSeg = activeSeg === id ? null : id;
+      renderSegs();
+    });
+  });
+
+  document.querySelectorAll('#seg-body .seg-close-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      activeSeg = null;
+      renderSegs();
+    });
+  });
+
+  document.querySelectorAll('#seg-body [data-seg-id]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const segId = btn.dataset.segId;
+      switchTab('buy', document.querySelectorAll('.tab')[0]);
+      buyFilter = segId;
+      renderChips();
+      renderBuy();
+    });
+  });
+}
+function closeDrill() { activeSeg = null; renderSegs(); renderDrill(); }
+
+document.getElementById('seg-search').addEventListener('input', e => {
+  segSearch = e.target.value; renderSegs();
+});
+
+/* ══ INIT ══ */
+renderChips();
+renderBuy();
+renderActions();
+renderCategories();
+renderErosion();
+renderAging();
+try { renderSegs(); } catch(e) {}
+
+document.getElementById('buy-sort').addEventListener('change', e => {
+  buySort = e.target.value;
+  currentPage = 1;
+  activeVehicle = null;
+  renderBuy();
+});
+</script>
+</body>
+</html>
